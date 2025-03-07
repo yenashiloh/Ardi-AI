@@ -1,0 +1,297 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: #f0f2f5;
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.login-container {
+  max-width: 930px;
+  width: 100%;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+}
+
+.left-side {
+  background-color: #c22126;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  width: 50%;
+  min-height: 500px;
+}
+
+.right-side {
+  background-color: white;
+  padding: 40px;
+  width: 50%;
+  display: flex;
+  align-items: center;
+}
+
+.logo-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 30px;
+  width: 100%;
+}
+
+.logo-img {
+  max-width: 60%;
+  margin-bottom: 20px;
+}
+
+.logo-white {
+max-width: 100%; 
+width: 30%; 
+height: auto; 
+}
+
+.login-form-container {
+  width: 100%;
+  max-width: 360px;
+  margin: 0 auto;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 30px;
+  color: #333;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.input-group {
+  position: relative;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 15px 45px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  height: 50px;
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.input-group input:focus {
+  border-color: #6a6a6a;
+}
+
+.input-group input::placeholder {
+  font-size: 14px;
+}
+
+.input-icon {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #666;
+  font-size: 18px;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #666;
+  font-size: 18px;
+}
+
+.form-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.form-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+input[type="checkbox"] {
+  width: 15px;
+  height: 15px;
+  /* accent-color: #c22126; */
+  cursor: pointer;
+}
+
+label {
+  font-size: 14px;
+  color: #555;
+  cursor: pointer;
+}
+
+.forgot-link {
+  color: #555;
+  text-decoration: none;
+  font-size: 13px;
+}
+
+.forgot-link:hover {
+  color: #c22126;
+  text-decoration: underline;
+}
+
+.login-btn {
+  background-color: #c22126;
+  border: none;
+  color: #fff;
+  font-weight: 600;
+  width: 100%;
+  padding: 13px;
+  border-radius: 50px;
+  cursor: pointer;
+  /* margin-bottom: 20px; */
+  font-size: 16px;
+  transition: background-color 0.3s, transform 0.1s;
+}
+
+.login-btn:hover {
+  background-color: #a51c20;
+}
+
+.login-btn:active {
+  transform: scale(0.98);
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  margin: 20px 0;
+}
+
+.divider::before, .divider::after {
+  content: "";
+  flex: 1;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+.divider span {
+  padding: 0 15px;
+  color: #666;
+  font-size: 14px;
+}
+
+.google-btn {
+  background-color: white;
+  color: #333;
+  border: 1px solid #ddd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 12px;
+  border-radius: 50px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.google-btn:hover {
+  background-color: #f8f9fa;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+}
+
+.google-btn svg {
+  margin-left: 8px;
+}
+
+.signup-container {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 14px;
+  color: #555;
+}
+
+.signup-link {
+  color: #c22126;
+  text-decoration: none;
+  font-weight: 600;
+  margin-left: 5px;
+}
+
+.signup-link:hover {
+  text-decoration: underline;
+}
+
+/* Responsive adjustments */
+@media (max-width: 900px) {
+  .login-container {
+    max-width: 600px;
+  }
+}
+
+@media (max-width: 768px) {
+  .login-container {
+    flex-direction: column;
+  }
+  
+  .left-side, .right-side {
+    width: 100%;
+    min-height: auto;
+    padding: 30px;
+  }
+  
+  .left-side {
+    padding-top: 40px;
+    padding-bottom: 40px;
+  }
+  
+  .logo-img {
+    max-width: 50%;
+  }
+  
+  .login-form-container {
+    padding: 20px 0;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    padding: 10px;
+  }
+  
+  .left-side, .right-side {
+    padding: 25px 20px;
+  }
+  
+  h2 {
+    margin-bottom: 20px;
+  }
+  
+  .input-group input {
+    font-size: 15px;
+  }
+  
+  /* For small mobile screens, make form-bottom items stack */
+  .form-bottom {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+}
