@@ -8,6 +8,16 @@
     font-family: "Open Sans", sans-serif;
 }
 
+body, html {
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body, html {
+        transition: none;
+    }
+}
+
 :root{
     --primary-color: #212121;
     --secondary-color: #292929;
@@ -34,6 +44,11 @@
     --close-button-color: #333537;
 
     --active-color: #940b10;
+
+    --login-hover: #dfdfdf;
+    --sign-up-hover: #383838;
+
+    --send-button-color:#dfdfdf;
 }
 
 .light_mode{
@@ -63,10 +78,38 @@
     --close-button-color:#F0F4F9;
 
     --active-color: #940b10;
+
+    --login-hover: #6e0609;
+    --sign-up-hover: #f1f1f1;
+    --send-button-color:#6e0609;
 }
 
-body{
+body {
     background: var(--primary-color);
+    color: var(--text-color);
+    transition: none;
+}
+
+.navbar__button,
+.header__title,
+.header__title h1,
+.header__title h2,
+.message__content,
+.message__text,
+.navbar__login-btn,
+.navbar__sign-up-btn,
+.navbar__button i {
+    transition: none;
+}
+
+.no-transition,
+.no-transition * {
+    transition: none !important;
+}
+
+body.loaded,
+body.loaded * {
+    transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .header,
@@ -82,19 +125,32 @@ body.hide-header .header{
     display: none;
 }
 
-.navbar{
+/* Navbar */
+.navbar {
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 1rem 2rem;
 }
 
-.navbar__logo{
+.navbar__logo {
     color: var(--text-secondary-color);
     font-weight: 600;
 }
 
-.navbar__button{
+.navbar__left {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.navbar__right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.navbar__button {
     padding: 0.5rem;
     font-size: 1.5rem;
     display: flex;
@@ -103,21 +159,96 @@ body.hide-header .header{
     border-radius: 0.75rem;
     border: none;
     background: var(--secondary-color);
-    color: var(--text-color);
+    color: var(--text-tertiary-color);
     cursor: pointer;
     transition: background 0.3s ease;
 }
 
-.navbar__button:hover{
+.navbar__button:hover {
     background: var(--secondary-hover-color);
     color: var(--new-chat-color);
 }
 
+.navbar__login-btn {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--button-background-color);
+    border: none;
+    color: var(--primary-color);
+    font-size: 0.90rem;
+    cursor: pointer;
+    padding: 0.75rem;
+    width: 90px;
+    height: 32px;
+    border-radius: 20px;
+    transition: background 0.3s ease, transform 0.2s ease;
+    font-weight: 600;
+}
+
+.navbar__sign-up-btn {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    border: 1px solid var(--text-secondary-color);
+    color: var(--text-tertiary-color);
+    font-size: 0.90rem;
+    cursor: pointer;
+    padding: 0.75rem;
+    width: 90px;
+    height: 32px;
+    border-radius: 20px;
+    transition: background 0.3s ease;
+    font-weight: 600;
+}
+
+.navbar__sign-up-btn:hover {
+    background: var(--sign-up-hover);
+
+}
+
+.navbar__menu-btn, 
+.navbar__new-chat-btn {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--secondary-color);
+    border: none;
+    color: var(--text-tertiary-color);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    transition: background 0.3s ease;
+}
+
+.navbar__menu-btn:hover, .navbar__new-chat-btn:hover {
+    background: var(--secondary-hover-color);
+    color: var(--new-chat-color);
+}
+
+.navbar__login-btn:hover {
+    background: var(--login-hover);
+}
+
+
+
+.navbar__logo {
+    color: var(--text-secondary-color);
+    font-weight: 600;
+}
+
+/* Header */
 .header{
     margin-top: 6vh;
 }
 
-/* Default styles for h1 and h2 */
 .header__title {
     text-align: center;
 }
@@ -132,7 +263,6 @@ body.hide-header .header{
     background: var(--text-tertiary-color);
     background-clip: text;
     -webkit-background-clip: text;
-    text-fill-color: transparent;
     -webkit-text-fill-color: transparent;
     font-size: 2.25rem;
     font-weight: 600;
@@ -229,9 +359,6 @@ body.hide-header .header{
     transition: background 0.3s ease;
 }
 
-/* .prompt__form-input:focus{
-    background: var(--focus-color);
-} */
 
 .prompt__form-input:focus ~ .prompt__form-button:hover{
     background: var(--focus-hover-color);
@@ -255,13 +382,13 @@ body.hide-header .header{
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #FFFFFF;
-    background: #C21C21;
+    color: var(--primary-color);
+    background: var(--button-background-color);
     transition: all 0.3s ease;
 }
 
 .prompt__form-button:hover{
-    background: #900005;
+    background: var(--send-button-color);
 }
 
 .prompt__form-button#sendButton{
@@ -281,6 +408,10 @@ body.hide-header .header{
     color: var(--placeholder-color);
     font-size: 0.85rem;
     margin-top: 1rem;
+}
+
+.prompt__form-button i.bx-up-arrow-alt {
+    font-size: 1.5rem;
 }
 
 .chats{
@@ -618,8 +749,6 @@ body.sidebar-open .main-content {
     width: 40px; 
     height: 40px;
     border-radius: 50%; 
-    /* Remove this line that adds the shadow */
-    /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
     transition: all 0.3s ease-in-out;
     position: absolute;
     right: -20px; 
@@ -673,7 +802,7 @@ body.sidebar-open .main-content {
 
 .sidebar__chat-item.active {
     background: #E9ECF1;
-    color:  var(--active-color);
+    color: #212121;
 }
 
 .sidebar__chat-item span {
@@ -723,72 +852,6 @@ body.sidebar-open .main-content {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: 600;
-}
-
-.navbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1rem 2rem;
-    position: relative; 
-}
-
-.navbar__menu-btn, 
-.navbar__new-chat-btn {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--secondary-color);
-    border: none;
-    color: var(--text-color);
-    font-size: 1.5rem;
-    cursor: pointer;
-    padding: 0.5rem;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    transition: background 0.3s ease;
-}
-
-
-
-.navbar__menu-btn:hover, .navbar__new-chat-btn:hover {
-    background: var(--secondary-hover-color);
-    color: var(--new-chat-color);
-}
-
-.navbar__login-btn {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--secondary-color);
-    border: none;
-    color: var(--text-color);
-    font-size: 1rem; /* Adjusted for better fit */
-    cursor: pointer;
-    padding: 0.75rem;
-    width: 100px; /* Increased for better text visibility */
-    height: 40px;
-    border-radius: 20px; /* More of a pill shape */
-    transition: background 0.3s ease, transform 0.2s ease;
-}
-
-/* Hover Effect */
-.navbar__login-btn:hover {
-    background: var(--primary-color);
-}
-
-/* Active Click Effect */
-.navbar__login-btn:active {
-    transform: scale(0.95);
-}
-
-
-.navbar__logo {
-    color: var(--text-secondary-color);
     font-weight: 600;
 }
 
@@ -890,3 +953,21 @@ body.sidebar-open {
         max-width: 300px;
     }
 }
+
+/* Sign Up */
+
+.input-group {
+    position: relative;
+    margin-bottom: 15px; 
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px 15px;
+    box-sizing: border-box;
+}
+
+.input-group input::placeholder {
+    font-size: 14px; 
+}
+

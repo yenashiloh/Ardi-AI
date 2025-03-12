@@ -68,5 +68,6 @@
     </div>
   </div>
     <script src="assets/js/login.js"></script>
+    <script></script>
 </body>
 </html>

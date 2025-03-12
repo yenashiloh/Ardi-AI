@@ -295,3 +295,35 @@ label {
     gap: 10px;
   }
 }
+
+.success-message, .error-message {
+  padding: 10px;
+  border-radius: 5px;
+  margin: 15px 0;
+  display: none;
+  text-align: center;
+  position: relative;
+}
+
+.success-message {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.error-message {
+  background-color: #fee2e2;
+  color: #b91c1c;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.close-btn {
+  margin-left: 10px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  color: inherit;
+}
