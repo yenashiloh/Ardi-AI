@@ -11,6 +11,12 @@ use MongoDB\Client;
 
 class LoginController extends Controller
 {
+    //login page
+    public function showloginPage()
+    {
+        return view('login');
+    }
+
     public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -82,7 +88,7 @@ class LoginController extends Controller
     public function logout(Request $request)
     {
         auth()->user()->tokens()->delete();
-        
+
         return response()->json([
             'status' => true,
             'message' => 'Successfully logged out'

@@ -4,18 +4,18 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PublicController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Admin\DashboardController;
-
+use App\Http\Controllers\Auth\LoginController;
 
 Route::get('/', function () {
     return view('index');
 });
 
 /********Login Page***********/
-Route::get('/login', [PublicController::class, 'showLoginPage'])->name('login');
+Route::get('/login', [LoginController::class, 'showLoginPage'])->name('login');
 
 
 /********Sign Up Page***********/
-Route::get('/sign-up', [PublicController::class, 'showSignUpPage'])->name('sign-up');
+Route::get('/sign-up', [RegisterController::class, 'showSignUpPage'])->name('sign-up');
 //Sign Up Post
 Route::post('/register', [RegisterController::class, 'register'])->name('register');
 //Verify OTP Post
