@@ -56,6 +56,15 @@ document.addEventListener('DOMContentLoaded', function () {
         }, duration);
     }
 
+    // Auto-capitalize first letter of first name and last name
+    document.querySelector('input[name="first_name"]').addEventListener('input', function () {
+        this.value = this.value.replace(/\b\w/g, char => char.toUpperCase());
+    });
+
+    document.querySelector('input[name="last_name"]').addEventListener('input', function () {
+        this.value = this.value.replace(/\b\w/g, char => char.toUpperCase());
+    });
+
     // Form submission
     document.getElementById('fullForm').addEventListener('submit', async function (e) {
         e.preventDefault();
@@ -104,7 +113,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const firstNameWords = firstName.toLowerCase().split(/\s+/);
         const lastNameWords = lastName.toLowerCase().split(/\s+/);
 
-        // Check each word in first_name and last_name
+        // Check each word in first_name, last_name, email
         for (let word of firstNameWords) {
             if (word.length > 2 && passwordLower.includes(word)) {
                 showMessageWithTimeout(document.querySelector('.error-message'),
@@ -112,6 +121,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
             }
         }
+
         for (let word of lastNameWords) {
             if (word.length > 2 && passwordLower.includes(word)) {
                 showMessageWithTimeout(document.querySelector('.error-message'),
@@ -120,21 +130,51 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
 
-        // Check email local part
+        // Check if password contains the entire local part
         if (passwordLower.includes(emailLocalPart)) {
             showMessageWithTimeout(document.querySelector('.error-message'),
-                'Password cannot contain your email.');
+                'Password cannot contain your email address.');
             return;
         }
 
-        // Split email local part into segments
+        // Split email local part into segments based on common separators
         const emailSegments = emailLocalPart.split(/[_.-]/);
+
+        // Check each segment of the email
         for (let segment of emailSegments) {
             if (segment.length > 2 && passwordLower.includes(segment)) {
                 showMessageWithTimeout(document.querySelector('.error-message'),
-                    'Password cannot contain parts of your email.');
+                    'Password cannot contain parts of your email address.');
                 return;
             }
+        }
+
+        // Email validation - find common substrings that might be in the password
+        function findCommonSubstrings(email, password) {
+            const emailLower = email.toLowerCase();
+            const passwordLower = password.toLowerCase();
+
+            // Check for substrings of at least 4 characters
+            for (let i = 0; i < emailLower.length - 3; i++) {
+                for (let j = i + 4; j <= Math.min(i + 20, emailLower.length); j++) {
+                    const substring = emailLower.substring(i, j);
+                    if (passwordLower.includes(substring)) {
+                        return substring;
+                    }
+                }
+            }
+            return null;
+        }
+
+        // Add this to your form submission code, after the existing email validation
+        // but before the password match check
+        const commonSubstring = findCommonSubstrings(emailLocalPart, passwordLower);
+        if (commonSubstring) {
+            showMessageWithTimeout(
+                document.querySelector('.error-message'),
+                `Password cannot contain parts of your email address.`
+            );
+            return;
         }
 
         // Check if passwords match
