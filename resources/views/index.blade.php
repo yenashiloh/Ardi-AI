@@ -25,56 +25,7 @@
             <button class="new-chat-btn mt-1">
                 <i class="fas fa-plus"></i> <span>New Chat</span>
             </button>
-            {{--             
-            <div class="sidebar-toggle">
-                <i class="fas fa-chevron-left"></i>
-            </div> --}}
-             <div class="search-bar">
-                <input type="text" placeholder="Search chats...">
-            </div>
-            
-            <div class="chat-history">
-                <div class="history-item active">
-                    <div class="history-icon">
-                        <i class="fas fa-comment-alt"></i>
-                    </div>
-                    <div class="history-text">What is Paralegal?</div>
-                    <div class="history-date">Today</div>
-                </div>
-                
-                <div class="history-item">
-                    <div class="history-icon">
-                        <i class="fas fa-comment-alt"></i>
-                    </div>
-                    <div class="history-text">Product Description Generator</div>
-                    <div class="history-date">Yesterday</div>
-                </div>
-                
-                <div class="history-item">
-                    <div class="history-icon">
-                        <i class="fas fa-comment-alt"></i>
-                    </div>
-                    <div class="history-text">Social Media Strategy Plan</div>
-                    <div class="history-date">Mar 10</div>
-                </div>
-                
-                <div class="history-item">
-                    <div class="history-icon">
-                        <i class="fas fa-comment-alt"></i>
-                    </div>
-                    <div class="history-text">Email Campaign Ideas</div>
-                    <div class="history-date">Mar 8</div>
-                </div>
-                
-                <div class="history-item">
-                    <div class="history-icon">
-                        <i class="fas fa-comment-alt"></i>
-                    </div>
-                    <div class="history-text">Website Copy Suggestions</div>
-                    <div class="history-date">Mar 5</div>
-                </div>
-            </div>
-            
+  
             <div class="theme-switch mt-auto">
                 <div class="theme-option active">
                   <i class="fa-solid fa-sun" style="font-size: 12px; margin-right: 3px;"></i> Light
@@ -83,19 +34,6 @@
                   <i class="fa-solid fa-moon" style="font-size: 12px; margin-right: 3px;"></i> Dark
                 </div>
               </div>
-
-            <div class="user-section">
-                <div class="user-avatar">
-                    <img src="../../assets/images/photo3.jpg" alt="User avatar">
-                </div>
-                <div class="user-info">
-                    <div class="user-name">John Doe</div>
-                    <div class="user-email">johndoe@gmail.com</div>
-                </div>
-                {{-- <div class="user-settings">
-                    <i class="fas fa-cog"></i>
-                </div> --}}
-            </div>
         </div>
         
         <!-- Chat area -->
@@ -107,92 +45,45 @@
                     </div>
                 </div>
                 <div class="header-controls">
-                     <div class="login">
-                        </i>Login
+                    <div class="login">
+                        <a href="{{ route('login') }}">Login</a>
                     </div> 
                     <div class="sign-up">
-                    </i>Sign Up
-                </div> 
+                        <a href="{{ route('sign-up') }}">Sign Up</a>
+                    </div> 
                 </div>
             </div>
             
             <div class="messages">
-                <div class="message">
-                    <div class="message-content">
-                        <div class="message-prompt">
-                            Lorem ipsum odor amet, consectetuer adipiscing elit. Pharetra lectus primis senectus a sollicitu
+                <div class="welcome-container">
+                    <div class="welcome-header">
+                        <div class="logo-icon logo-heading">
+                            <img src="../assets/images/Ardi-Logo.svg" alt="Ardi Logo">
                         </div>
+                        <h1 class="welcome-heading">Hello, I'm Ardi</h1>
                     </div>
+                    <p class="welcome-subheading">Ask me anything about legal case management</p>
                 </div>
                 
-                <div class="message">
-                    <div class="message-avatar">
-                        <img src="../assets/images/Ardi-Logo.svg" alt="AI avatar">
+                <div class="card-grid">
+                    <div class="info-card">
+                        <p>Lorem ipsum dolor amet, consectetuer adipiscing elit.</p>
                     </div>
-                    <div class="message-content">
-                        <div class="message-result">
-                            <div class="headlines">
-                                <div class="headline-item">
-                                    <div class="headline-text">Lorem ipsum odor amet, consectetuer adipiscing elit. Pharetra lectus primis senectus a sollicitudin rutrum inceptos sagittis. Aliquet nullam rhoncus, tellus porta finibus cursus leo odio quisque. Mi cubilia lacus montes; curabitur eu lacus. Sed ante proin ut netus massa lorem viverra litora consequat. Augue aenean ornare enim cras ridiculus nascetur cursus tortor. Lobortis pharetra potenti consequat laoreet netus interdum pretium eget.
-                                     </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="message-actions">
-                            <button class="action-button">
-                                <i class="far fa-copy"></i> Copy
-                            </button>
-                            
-                            <button class="action-button">
-                                <i class="fas fa-share"></i> Share
-                            </button>
-                        </div>
+                    <div class="info-card">
+                        <p>Lorem ipsum dolor amet, consectetuer adipiscing elit.</p>
                     </div>
-                </div>
-
-                <div class="message">
-                    <div class="message-content">
-                        <div class="message-prompt">
-                            Lorem ipsum odor amet, consectetuer adipiscing elit. Pharetra lectus primis senectus a sollicitu Lorem ipsum odor amet, consectetuer adipiscing elit. Pharetra lectus primis senectus a sollicitu
-                        </div>
+                    <div class="info-card">
+                        <p>Lorem ipsum dolor amet, consectetuer adipiscing elit.</p>
                     </div>
-                </div>            
-                
-                {{-- <div class="regenerate-button">
-                    <button class="regenerate">
-                        <i class="fas fa-refresh"></i> Regenerate
-                    </button>
-                </div> --}}
-            </div>
-            
-            <div class="input-area">
-                <div class="message-input-container">
-                    <textarea class="message-input" placeholder="Ask a question..."></textarea>
-
-                    <div class="send-button">
-                        <i class="fas fa-arrow-up"></i>
+                    <div class="info-card">
+                        <p>Lorem ipsum dolor amet, consectetuer adipiscing elit.</p>
                     </div>
-                </div>
-                
-                <div class="input-controls">
-                    <button class="control-button">
-                        <i class="fas fa-paperclip"></i> Attach
-                    </button>
-                    
-                    {{-- <button class="control-button">
-                        <i class="fas fa-microphone"></i> Voice Message
-                    </button> --}}
-                    
-                    <button class="control-button">
-                        <i class="fas fa-magic"></i> Browse Prompts
-                    </button>
-                    
-                    <div class="character-count">0/3,000</div>
-                </div> 
-                
-                <div class="footer-text">
-                    Ardi AI can make mistakes. Please verify important information.
+                    <div class="info-card">
+                        <p>Lorem ipsum dolor amet, consectetuer adipiscing elit.</p>
+                    </div>
+                    <div class="info-card">
+                        <p>Lorem ipsum dolor amet, consectetuer adipiscing elit.</p>
+                    </div>
                 </div>
             </div>
         </div>

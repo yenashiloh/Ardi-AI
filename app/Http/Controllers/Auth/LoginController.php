@@ -94,4 +94,14 @@ class LoginController extends Controller
             'message' => 'Successfully logged out'
         ]);
     }
+
+    public function showIndexTwoPage()
+    {
+        return view('index-2');
+    }
+
+    public function showIndexFourPage()
+    {
+        return view('index-4');
+    }
 }

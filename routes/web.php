@@ -10,6 +10,9 @@ Route::get('/', function () {
     return view('index');
 });
 
+Route::get('/index-2', [LoginController::class, 'showIndexTwoPage'])->name('index-2');
+Route::get('/index-4', [LoginController::class, 'showIndexFourPage'])->name('index-4');
+
 /********Login Page***********/
 Route::get('/login', [LoginController::class, 'showLoginPage'])->name('login');
 
