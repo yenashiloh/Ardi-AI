@@ -5,7 +5,8 @@ use App\Http\Controllers\PublicController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Auth\LoginController;
-
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\ContentController;
 Route::get('/', function () {
     return view('index');
 });
@@ -33,3 +34,16 @@ Route::get('/emails/verify-email', [RegisterController::class, 'showVerification
 
 /********Dashboard Page***********/
 Route::get('/dashboard', [DashboardController::class, 'showDashboardPage'])->name('admin.dashboard.dashboard');
+
+/********Users Management Page***********/
+//Users Page
+Route::get('/users', [UserController::class, 'showUsersPage'])->name('admin.users.users');
+//Audit Trail Page
+Route::get('/audit-trail', [UserController::class, 'showAuditTrailPage'])->name('admin.users-management.audit-trail');
+//Create Account Page
+Route::get('/create-account', [UserController::class, 'showCreateAccountPage'])->name('admin.users-management.create-account');
+
+/********Content Management Page***********/
+Route::get('/documents', [ContentController::class, 'showDocumentsPage'])->name('admin.content-management.documents');
+Route::get('/add-query', [ContentController::class, 'showAddDocumentPage'])->name('admin.content-management.documents.add-document');
+Route::get('/edit-query', [ContentController::class, 'showEditDocumentPage'])->name('admin.content-management.documents.edit-document');

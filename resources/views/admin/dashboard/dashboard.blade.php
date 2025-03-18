@@ -1,91 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    @include('admin.partials.header')
     <title>Dashboard</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="../assets/css/dashboard.css">
-    <link rel="icon" href="../../assets/images/Ardi-Logo.svg" type="image/x-icon"/>
 </head>
 <body>
-    <!-- Toggle Button for Mobile -->
-    <button class="toggle-button" id="sidebarToggle">
-        <i class="fas fa-bars"></i>
-    </button>
-
-    <!-- Sidebar -->
-    <div class="sidebar" id="sidebar">
-        <div class="logo">
-            <div class="logo-icon">
-                <img src="../assets/images/Ardi-Logo.svg" alt="Ardi Logo">
-            </div>
-            <span> Ardi AI</span>
-        </div>
-
-        <div class="sidebar-section">
-            <div class="sidebar-section-title">MAIN</div>
-            <a href="#" class="sidebar-item active">
-                <i class="fas fa-tachometer-alt"></i>
-                <span>Dashboard</span>
-            </a>
-        </div>
-
-        <div class="sidebar-section">
-            <div class="sidebar-section-title">Users Management</div>
-            <a href="#" class="sidebar-item">
-                <i class="fas fa-user"></i>
-                <span>Users</span>
-            </a>
-            <a href="#" class="sidebar-item">
-                <i class="fas fa-layer-group"></i>
-                <span>Audit Trail</span>
-            </a>
-            <a href="#" class="sidebar-item">
-                <i class="fas fa-user-plus"></i>
-                <span>Create Account</span>
-            </a>
-            
-        </div>
-
-        <div class="sidebar-section">
-            <div class="sidebar-section-title">Content Management</div>
-            <a href="#" class="sidebar-item">
-                <i class="fas fa-file-alt"></i>
-                <span>Documents</span>
-            </a>
-            <a href="#" class="sidebar-item">
-                <i class="fas fa-newspaper"></i> 
-                <span>Content</span>
-            </a>
-        </div>
-    </div>
-
-    <!-- Main Content -->
-    <div class="main-content" id="mainContent">
-        <!-- Navbar -->
-        <div class="navbar">
-            <div class="search-box">
-                <i class="fas fa-search"></i>
-                <input type="text" placeholder="Search for Results...">
-            </div>
-            <div class="navbar-icons">
-                <div class="dark-mode-toggle" id="darkModeToggle"></div>
-                <button class="icon-button">
-                    <i class="fas fa-bell"></i>
-                    <span class="badge">5</span>
-                </button>
-                <button class="icon-button">
-                    <i class="fas fa-expand"></i>
-                </button>
-                <img src="../../../assets/images/photo3.jpg" alt="User Avatar" class="user-avatar">
-            </div>
-        </div>
-
+    @include('admin.partials.sidebar')
         <!-- Header -->
         <div class="header">
             <div class="greeting">
@@ -159,13 +79,69 @@
             </div>
         </div>
 
+       <!-- DataTables Section -->
+        <div class="row">
+            <div class="col-12">
+                <div class="dataTables_wrapper">
+                    <!-- Custom DataTable Controls -->
+                    <div class="datatable-controls">
+                        <div class="datatable-title">
+                            User Management
+                        </div>
+                        <div class="datatable-actions">
+                            <button class="datatable-btn datatable-btn-secondary">
+                                <i class="fas fa-filter"></i> Filter
+                            </button>
+                            <button class="datatable-btn datatable-btn-secondary">
+                                <i class="fas fa-upload"></i> Import
+                            </button>
+                            <button class="datatable-btn datatable-btn-primary">
+                                <i class="fas fa-plus"></i> Add User
+                            </button>
+                        </div>
+                    </div>
 
-
-    <!-- Bootstrap JS and Popper.js -->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
-    <!-- Chart.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
-    <script src="../../assets/js/admin/main.js"></script>
+                <!-- DataTable -->
+                <table id="example" class="display table table-striped table-hover" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>User ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Status</th>
+                                <th>Last Login</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>#USR001</td>
+                                <td>John Doe</td>
+                                <td>john.doe@example.com</td>
+                                <td>Administrator</td>
+                                <td><span class="status-indicator status-active">Active</span></td>
+                                <td>2025-03-15 14:30</td>
+                                <td>
+                                    <div class="table-actions">
+                                        <button class="table-action-btn" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="table-action-btn" data-bs-toggle="tooltip" data-bs-placement="top" title="Archive">
+                                            <i class="fas fa-archive"></i>
+                                        </button>      
+                                        <button class="table-action-btn" data-bs-toggle="tooltip" data-bs-placement="top" title="Disable">
+                                            <i class="fas fa-ban"></i>
+                                        </button>                                  
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    @include('admin.partials.footer')z
 </body>
 </html>

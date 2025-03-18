@@ -127,3 +127,5 @@ function animateCards() {
 window.addEventListener('load', () => {
     animateCards();
 });
+
+//Tooltip
