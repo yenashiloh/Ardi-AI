@@ -36,7 +36,7 @@ Route::get('/emails/verify-email', [RegisterController::class, 'showVerification
 /************************************************ADMIN SIDE***********************************************************/
 
 /********Dashboard Page***********/
-Route::middleware(['auth', 'admin.auth'])->group(function () {
+
 Route::get('/dashboard', [DashboardController::class, 'showDashboardPage'])->name('admin.dashboard.dashboard');
 
 /********Users Management Page***********/
@@ -75,4 +75,4 @@ Route::get('/add-query', [ContentController::class, 'showAddResponsePage'])->nam
 //Edit Query Page
 Route::get('/edit-query', [ContentController::class, 'showEditResponsePage'])->name('admin.content-management.response.edit-response');
 
-});
+
