@@ -6,18 +6,18 @@ use App\Http\Controllers\Controller;
 
 class ContentController extends Controller
 {
-    public function showDocumentsPage()
+    public function showResponsePage()
     {
-        return view('admin.content-management.documents.documents');
+        return view('admin.content-management.response.response');
     }
 
-    public function showAddDocumentPage()
+    public function showAddResponsePage()
     {
-        return view('admin.content-management.documents.add-document');
-    }
+        return view('admin.content-management.response.add-response');
+    } 
 
-    public function showEditDocumentPage()
+    public function showEditResponsePage()
     {
-        return view('admin.content-management.documents.edit-document');
+        return view('admin.content-management.response.edit-response');
     }
 }

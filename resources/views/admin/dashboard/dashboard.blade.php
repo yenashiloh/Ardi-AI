@@ -78,69 +78,6 @@
                 </div>
             </div>
         </div>
-
-       <!-- DataTables Section -->
-        <div class="row">
-            <div class="col-12">
-                <div class="dataTables_wrapper">
-                    <!-- Custom DataTable Controls -->
-                    <div class="datatable-controls">
-                        <div class="datatable-title">
-                            User Management
-                        </div>
-                        <div class="datatable-actions">
-                            <button class="datatable-btn datatable-btn-secondary">
-                                <i class="fas fa-filter"></i> Filter
-                            </button>
-                            <button class="datatable-btn datatable-btn-secondary">
-                                <i class="fas fa-upload"></i> Import
-                            </button>
-                            <button class="datatable-btn datatable-btn-primary">
-                                <i class="fas fa-plus"></i> Add User
-                            </button>
-                        </div>
-                    </div>
-
-                <!-- DataTable -->
-                <table id="example" class="display table table-striped table-hover" style="width:100%">
-                        <thead>
-                            <tr>
-                                <th>User ID</th>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Role</th>
-                                <th>Status</th>
-                                <th>Last Login</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>#USR001</td>
-                                <td>John Doe</td>
-                                <td>john.doe@example.com</td>
-                                <td>Administrator</td>
-                                <td><span class="status-indicator status-active">Active</span></td>
-                                <td>2025-03-15 14:30</td>
-                                <td>
-                                    <div class="table-actions">
-                                        <button class="table-action-btn" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="table-action-btn" data-bs-toggle="tooltip" data-bs-placement="top" title="Archive">
-                                            <i class="fas fa-archive"></i>
-                                        </button>      
-                                        <button class="table-action-btn" data-bs-toggle="tooltip" data-bs-placement="top" title="Disable">
-                                            <i class="fas fa-ban"></i>
-                                        </button>                                  
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
     </div>
     @include('admin.partials.footer')z
 </body>

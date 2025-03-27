@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     @include('admin.partials.header')
-    <title>Documents</title>
+    <title>Response</title>
 </head>
 <body>
     @include('admin.partials.sidebar')
@@ -12,7 +12,7 @@
             <a href="{{route ('admin.dashboard.dashboard')}}" class="breadcrumb-link">Dashboard</a>
         </div>
         <div class="breadcrumb-item active">
-            <a href="#" class="breadcrumb-link">Documents</a>
+            <a href="#" class="breadcrumb-link">Response</a>
         </div>
     </div>
     
@@ -21,7 +21,7 @@
             <div class="dataTables_wrapper">
                 <!-- Custom DataTable Controls -->
                 <div class="datatable-controls">
-                    <a href="{{ route('admin.content-management.documents.add-document') }}" class="btn btn-primary">
+                    <a href="{{ route('admin.content-management.response.add-response') }}" class="btn btn-primary">
                         <i class="fas fa-plus"></i> Add Query
                     </a>
                     <div class="datatable-actions">
@@ -51,7 +51,7 @@
                                 <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</td>
                                 <td>
                                     <div class="table-actions">
-                                        <a href="{{ route('admin.content-management.documents.edit-document') }}" class="table-action-btn">
+                                        <a href="{{ route('admin.content-management.response.edit-response') }}" class="table-action-btn">
                                             <i class="fas fa-edit"></i>
                                         </a>
                                         <button class="table-action-btn">
@@ -105,7 +105,7 @@
                                 <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</td>
                                 <td>
                                     <div class="table-actions">
-                                        <a href="{{ route('admin.content-management.documents.edit-document') }}" class="table-action-btn">
+                                        <a href="{{ route('admin.content-management.response.edit-response') }}" class="table-action-btn">
                                             <i class="fas fa-edit"></i>
                                         </a>   
                                         <button class="table-action-btn">

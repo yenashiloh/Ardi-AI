@@ -5,17 +5,19 @@
 <!-- Chart.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
 
-<!-- DataTables JS - updated with a more specific version -->
+<!-- DataTables JS -->
 <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
 
 <!-- Custom JS -->
 <script src="../../assets/js/admin/main.js"></script>
 
-<!-- Initialize DataTable -->
+<!-- Sweet Alert  -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
     //Data table
     $(document).ready(function() {
-        $('#example').DataTable({
+        $('#data-table').DataTable({
             responsive: true,
             // Add some basic styling
             "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],

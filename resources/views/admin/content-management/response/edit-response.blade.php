@@ -12,7 +12,7 @@
             <a href="{{route ('admin.dashboard.dashboard')}}" class="breadcrumb-link">Dashboard</a>
         </div>
         <div class="breadcrumb-item">
-            <a href="{{route ('admin.content-management.documents')}}" class="breadcrumb-link">Documents</a>
+            <a href="{{route ('admin.content-management.response')}}" class="breadcrumb-link">Response</a>
         </div>
         <div class="breadcrumb-item active">
             <a href="#" class="breadcrumb-link">Edit Query</a>

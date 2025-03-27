@@ -31,24 +31,24 @@
             <i class="fas fa-layer-group"></i>
             <span>Audit Trail</span>
         </a>
-        <a href="{{route('admin.users-management.create-account')}}" class="sidebar-item {{ request()->routeIs('admin.users-management.create-account') ? 'active' : '' }}">
+        {{-- <a href="{{route('admin.users-management.create-account')}}" class="sidebar-item {{ request()->routeIs('admin.users-management.create-account') ? 'active' : '' }}">
             <i class="fas fa-user-plus"></i>
             <span>Create Account</span>
-        </a>
+        </a> --}}
     </div>
 
     <div class="sidebar-section">
         <div class="sidebar-section-title">Content Management</div>
-        <a href="{{ route('admin.content-management.documents') }}" 
-            class="sidebar-item {{ request()->routeIs('admin.content-management.documents') || request()->routeIs('admin.content-management.documents.add-document') 
-            || request()->routeIs('admin.content-management.documents.edit-document')? 'active' : '' }}">
+        <a href="" class="sidebar-item">
             <i class="fas fa-file-alt"></i>
             <span>Documents</span>
         </a>
         
-        <a href="#" class="sidebar-item">
-            <i class="fas fa-newspaper"></i> 
-            <span>Content</span>
+        <a href="{{ route('admin.content-management.response') }}" 
+            class="sidebar-item {{ request()->routeIs('admin.content-management.response') || request()->routeIs('admin.content-management.response.add-response') 
+            || request()->routeIs('admin.content-management.response.edit-response') ? 'active' : '' }}">
+            <i class="fas fa-sync"></i> 
+            <span>Response</span>
         </a>
     </div>
 </div>

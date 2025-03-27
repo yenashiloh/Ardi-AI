@@ -37,7 +37,7 @@
                 </div>
       
                 <!-- DataTable -->
-                <table id="example" class="display table table-striped table-hover" style="width:100%">
+                <table id="data-table" class="display table table-striped table-hover" style="width:100%">
                         <thead>
                             <tr>
                                 <th>No.</th>

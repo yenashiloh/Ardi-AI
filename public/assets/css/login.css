@@ -311,7 +311,7 @@ label {
 }
 
 .error-message {
-  background-color: #fee2e2;
+  /* background-color: #fee2e2; */
   color: #b91c1c;
   display: flex;
   justify-content: center;
