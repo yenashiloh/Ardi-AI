@@ -110,24 +110,11 @@
                 
                 @guest
                 <div class="card-grid">
-                    <div class="info-card">
-                        <p>Lorem ipsum dolor amet, consectetuer adipiscing elit.</p>
-                    </div>
-                    <div class="info-card">
-                        <p>Lorem ipsum dolor amet, consectetuer adipiscing elit.</p>
-                    </div>
-                    <div class="info-card">
-                        <p>Lorem ipsum dolor amet, consectetuer adipiscing elit.</p>
-                    </div>
-                    <div class="info-card">
-                        <p>Lorem ipsum dolor amet, consectetuer adipiscing elit.</p>
-                    </div>
-                    <div class="info-card">
-                        <p>Lorem ipsum dolor amet, consectetuer adipiscing elit.</p>
-                    </div>
-                    <div class="info-card">
-                        <p>Lorem ipsum dolor amet, consectetuer adipiscing elit.</p>
-                    </div>
+                    @foreach ($responses as $response)
+                        <div class="info-card">
+                            <p>{{ $response->question }}</p>
+                        </div>
+                    @endforeach
                 </div>
                 @endguest
             </div>

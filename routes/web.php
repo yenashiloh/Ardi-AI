@@ -6,7 +6,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\Admin\ContentController;
+use App\Http\Controllers\Admin\ResponseController;
 use App\Http\Controllers\AuthController;
 
 
@@ -35,10 +35,12 @@ Route::get('/emails/verify-email', [RegisterController::class, 'showVerification
 
 /************************************************ADMIN SIDE***********************************************************/
 
-/********Dashboard Page***********/
+/************Dashboard Page**************/
 
+Route::middleware(['auth', 'admin'])
+->group(function () {
 Route::get('/dashboard', [DashboardController::class, 'showDashboardPage'])->name('admin.dashboard.dashboard');
-
+   
 /********Users Management Page***********/
 //Users Page
 Route::get('/users', [UserController::class, 'showUsersPage'])->name('admin.users.users');
@@ -67,12 +69,19 @@ Route::get('/audit-trail', [UserController::class, 'showAuditTrailPage'])->name(
 //Create Account Page
 Route::get('/create-account', [UserController::class, 'showCreateAccountPage'])->name('admin.users-management.create-account');
 
-/********Content Management Page***********/
+/********Respons Management Page***********/
 //Response Page
-Route::get('/response', [ContentController::class, 'showResponsePage'])->name('admin.content-management.response');
+Route::get('/response', [ResponseController::class, 'showResponsePage'])->name('admin.content-management.response');
 //Add Query Page
-Route::get('/add-query', [ContentController::class, 'showAddResponsePage'])->name('admin.content-management.response.add-response');
+Route::get('/add-query', [ResponseController::class, 'showAddResponsePage'])->name('admin.content-management.response.add-response');
 //Edit Query Page
-Route::get('/edit-query', [ContentController::class, 'showEditResponsePage'])->name('admin.content-management.response.edit-response');
+Route::get('/edit-query', [ResponseController::class, 'showEditResponsePage'])->name('admin.content-management.response.edit-response');
+//Sore Query
+Route::post('/store-response', [ResponseController::class, 'storeResponse'])->name('response.store');
+//Get Response
+Route::get('/responses', [ResponseController::class, 'getResponses'])->name('response.list');
 
+//Logout
+Route::post('/logout', [DashboardController::class, 'logout'])->name('logout');
 
+});

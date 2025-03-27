@@ -3,8 +3,6 @@
 <head>
     @include('admin.partials.header')
     <title>Users</title>
-
-    
 </head>
 <body>
     @include('admin.partials.sidebar')
@@ -264,7 +262,6 @@
             </div>
         </div>
     </div>
-
     
     @include('admin.partials.footer')
     <script src="../../assets/js/admin/users.js"></script>

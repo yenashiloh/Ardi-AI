@@ -6,6 +6,7 @@ use App\Imports\UsersImport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use App\Models\User;
@@ -19,11 +20,15 @@ class UserController extends Controller
     //Show Users Page
     public function showUsersPage()
     {
+        $user = Auth::user();
         return view('admin.users-management.users', [
+            'firstName' => $user->first_name ?? 'User',
+            'role' => $user->role ?? 'Unknown',
+            'lastName' => $user->last_name,
             'users' => User::where('is_archive', 0)
                 ->get(['id_number', 'first_name', 'last_name', 'email', 'role', 'status', 'created_at'])
         ]);
-    }
+    }   
 
     //Get User Details
     public function getUserDetails($idNumber)
@@ -399,7 +404,12 @@ class UserController extends Controller
     //Show Audit Trail Page
     public function showAuditTrailPage()
     {
-        return view('admin.users-management.audit-trail');
+        $user = Auth::user();
+        return view('admin.users-management.audit-trail', [
+            'firstName' => $user->first_name,
+            'lastName' => $user->last_name,
+            'role' => $user->role
+        ]);
     }
 
     public function showCreateAccountPage()
