@@ -43,8 +43,7 @@
             <div id="successMessage" class="container mt-3"></div>
 
              <!-- Success Alert -->
- 
-            <!-- DataTable -->
+
             <table id="data-table" class="display table table-striped table-hover" style="width:100%">
                     <thead>
                         <tr>

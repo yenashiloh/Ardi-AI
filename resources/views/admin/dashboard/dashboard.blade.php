@@ -9,7 +9,7 @@
         <!-- Header -->
         <div class="header">
             <div class="greeting">
-                <h1>Hello, User</h1>
+                <h1>Hello, Shiloh</h1>
                 <p>Dashboard Summary</p>
             </div>
             <div class="header-controls">

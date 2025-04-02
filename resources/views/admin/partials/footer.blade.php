@@ -10,32 +10,11 @@
 
 <!-- Custom JS -->
 <script src="../../assets/js/admin/main.js"></script>
+<script src="../../assets/js/admin/data-table.js"></script>
 
 <!-- Sweet Alert  -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-    //Data table
-    $(document).ready(function() {
-        $('#data-table').DataTable({
-            responsive: true,
-            // Add some basic styling
-            "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
-            "pageLength": 5
-        });
-        
-        // Toggle sidebar
-        $("#sidebarToggle").on("click", function() {
-            $("#sidebar").toggleClass("collapsed");
-            $("#mainContent").toggleClass("expanded");
-        });
-    });
-
-    //Tooltip
-    document.addEventListener("DOMContentLoaded", function () {
-        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-            return new bootstrap.Tooltip(tooltipTriggerEl);
-        });
-    });
+   
 </script>

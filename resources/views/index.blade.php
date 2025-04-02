@@ -1,17 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ardi AI</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="assets/css/main.css">
-    <link rel="icon" href="assets/images/Ardi-Logo.svg" type="image/x-icon"/>
+    <link rel="icon" href="assets/images/Ardi-Logo.svg" type="image/x-icon" />
 </head>
+
 <body>
     <div class="sidebar-overlay"></div>
-    
+
     <div class="main-content">
         <!-- Sidebar with chat history -->
         <div class="sidebar">
@@ -21,65 +24,65 @@
                 </div>
                 <span>Ardi AI</span>
             </div>
-            
+
             <button class="new-chat-btn mt-1">
                 <i class="fas fa-plus"></i> <span>New Chat</span>
             </button>
-  
+
             @auth
-            <div class="chat-history">
-                <div class="history-item active">
-                    <div class="history-icon">
-                        <i class="fas fa-comment-alt"></i>
+                <div class="chat-history">
+                    <div class="history-item active">
+                        <div class="history-icon">
+                            <i class="fas fa-comment-alt"></i>
+                        </div>
+                        <div class="history-text">What is Paralegal?</div>
+                        <div class="history-date">Today</div>
                     </div>
-                    <div class="history-text">What is Paralegal?</div>
-                    <div class="history-date">Today</div>
-                </div>
-                
-                <div class="history-item">
-                    <div class="history-icon">
-                        <i class="fas fa-comment-alt"></i>
+
+                    <div class="history-item">
+                        <div class="history-icon">
+                            <i class="fas fa-comment-alt"></i>
+                        </div>
+                        <div class="history-text">Product Description Generator</div>
+                        <div class="history-date">Yesterday</div>
                     </div>
-                    <div class="history-text">Product Description Generator</div>
-                    <div class="history-date">Yesterday</div>
-                </div>
-                <div class="history-item">
-                    <div class="history-icon">
-                        <i class="fas fa-comment-alt"></i>
+                    <div class="history-item">
+                        <div class="history-icon">
+                            <i class="fas fa-comment-alt"></i>
+                        </div>
+                        <div class="history-text">Product Description Generator</div>
+                        <div class="history-date">Yesterday</div>
                     </div>
-                    <div class="history-text">Product Description Generator</div>
-                    <div class="history-date">Yesterday</div>
                 </div>
-            </div>
             @endauth
 
             <div class="theme-switch mt-auto">
                 <div class="theme-option active">
-                  <i class="fa-solid fa-sun" style="font-size: 12px; margin-right: 3px;"></i> Light
+                    <i class="fa-solid fa-sun" style="font-size: 12px; margin-right: 3px;"></i> Light
                 </div>
                 <div class="theme-option">
-                  <i class="fa-solid fa-moon" style="font-size: 12px; margin-right: 3px;"></i> Dark
+                    <i class="fa-solid fa-moon" style="font-size: 12px; margin-right: 3px;"></i> Dark
                 </div>
-              </div>
-              @auth
-              <div class="user-section">
-                  <div class="user-avatar">
-                      <div class="avatar-initials">
-                          {{ strtoupper(substr($userName, 0, 2)) }}
-                      </div>
-                  </div>
-                  <div class="user-info">
-                      <div class="user-name">{{ $userName }}</div>
-                      <div class="user-email">{{ $userEmail }}</div>
-                  </div>
-                  {{-- <div class="user-settings">
+            </div>
+            @auth
+                <div class="user-section">
+                    <div class="user-avatar">
+                        <div class="avatar-initials">
+                            {{ strtoupper(substr($userName, 0, 2)) }}
+                        </div>
+                    </div>
+                    <div class="user-info">
+                        <div class="user-name">{{ $userName }}</div>
+                        <div class="user-email">{{ $userEmail }}</div>
+                    </div>
+                    {{-- <div class="user-settings">
                       <i class="fas fa-cog"></i>
                   </div> --}}
-              </div>
-          @endauth
-          
+                </div>
+            @endauth
+
         </div>
-        
+
         <!-- Chat area -->
         <div class="chat-area">
             <div class="chat-header">
@@ -89,14 +92,14 @@
                     </div>
                 </div>
                 @guest
-                <div class="header-controls">
-                    <div class="login">
-                        <a href="{{ route('login') }}">Login</a>
+                    <div class="header-controls">
+                        <div class="login">
+                            <a href="{{ route('login') }}">Login</a>
+                        </div>
                     </div>
-                </div>
                 @endguest
             </div>
-            
+
             <div class="messages">
                 <div class="welcome-container">
                     <div class="welcome-header">
@@ -109,37 +112,39 @@
                 </div>
                 
                 @guest
-                <div class="card-grid">
-                    @foreach ($responses as $response)
-                        <div class="info-card">
-                            <p>{{ $response->question }}</p>
-                        </div>
-                    @endforeach
-                </div>
+                    <div class="card-grid">
+                        @foreach ($responses->take(6) as $response)
+                            <div class="info-card" data-id="{{ $response->id }}">
+                                <p>{{ $response->question }}</p>
+                            </div>
+                        @endforeach
+                    </div>
                 @endguest
+
+
             </div>
 
             @auth
-            <div class="input-area">
-                <div class="message-input-container">
-                    <textarea class="message-input" placeholder="Ask a question..."></textarea>
+                <div class="input-area">
+                    <div class="message-input-container">
+                        <textarea class="message-input" placeholder="Ask a question..."></textarea>
 
-                    <div class="send-button">
-                        <i class="fas fa-arrow-up"></i>
+                        <div class="send-button">
+                            <i class="fas fa-arrow-up"></i>
+                        </div>
                     </div>
-                </div>
-                
-                <div class="input-controls">
-                    <button class="control-button">
-                        <i class="fas fa-paperclip"></i> Attach
-                    </button>
-                    
-                    <button class="control-button">
-                        <i class="fas fa-magic"></i> Browse Prompts
-                    </button>
-                    
-                    <div class="character-count">0/3,000</div>
-                </div> 
+
+                    <div class="input-controls">
+                        <button class="control-button">
+                            <i class="fas fa-paperclip"></i> Attach
+                        </button>
+
+                        <button class="control-button">
+                            <i class="fas fa-magic"></i> Browse Prompts
+                        </button>
+
+                        <div class="character-count">0/3,000</div>
+                    </div>
                 @endauth
                 <div class="footer-text">
                     Ardi AI can make mistakes. Please verify important information.
@@ -147,8 +152,55 @@
             </div>
         </div>
     </div>
-    
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
     <script src="assets/js/chatbot.js"></script>
+    <script src="assets/js/ai-response.js"></script>
+    <script>
+        // function diagnosePageElements() {
+        //     console.group('Page Element Diagnosis');
+
+        //     // Check for cards
+        //     const cards = document.querySelectorAll('.info-card');
+        //     console.log('Info cards found:', cards.length);
+        //     cards.forEach((card, i) => console.log(`Card ${i+1} text:`, card.textContent.trim()));
+
+        //     // Check for prompt area
+        //     const promptArea = document.querySelector('.message-prompt');
+        //     console.log('Prompt area found:', !!promptArea);
+
+        //     // Check for result area
+        //     const resultArea = document.querySelector('.headline-text');
+        //     console.log('Result area found:', !!resultArea);
+
+        //     console.groupEnd();
+
+        //     return {
+        //         cardsExist: cards.length > 0,
+        //         promptAreaExists: !!promptArea,
+        //         resultAreaExists: !!resultArea
+        //     };
+        // }
+
+        // // Run the diagnosis
+        // window.onload = function() {
+        //     console.log('Running element diagnosis...');
+        //     const result = diagnosePageElements();
+
+        //     if (!result.cardsExist) {
+        //         console.error('PROBLEM: No cards found! Check your HTML structure and CSS classes.');
+        //     }
+
+        //     if (!result.promptAreaExists) {
+        //         console.error('PROBLEM: No message-prompt area found! Check your HTML structure.');
+        //     }
+
+        //     if (!result.resultAreaExists) {
+        //         console.error('PROBLEM: No headline-text area found! Check your HTML structure.');
+        //     }
+        // };
+    </script>
+</body>
+
+</html>

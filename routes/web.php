@@ -8,12 +8,16 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\ResponseController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\AiResponseController;
 
 
 Route::get('/', [AuthController::class, 'index'])->name('index');
 
 Route::get('/index-2', [LoginController::class, 'showIndexTwoPage'])->name('index-2');
 Route::get('/index-4', [LoginController::class, 'showIndexFourPage'])->name('index-4');
+
+Route::get('/responses/{id}', [AiResponseController::class, 'getById'])->name('responses.get');
+
 
 /********Login Page***********/
 Route::get('/login', [LoginController::class, 'showLoginPage'])->name('login');
@@ -75,11 +79,21 @@ Route::get('/response', [ResponseController::class, 'showResponsePage'])->name('
 //Add Query Page
 Route::get('/add-query', [ResponseController::class, 'showAddResponsePage'])->name('admin.content-management.response.add-response');
 //Edit Query Page
-Route::get('/edit-query', [ResponseController::class, 'showEditResponsePage'])->name('admin.content-management.response.edit-response');
+Route::get('/edit-query/{id}', [ResponseController::class, 'showEditResponsePage'])->name('admin.content-management.response.edit-response');
+//Update Query Page
+Route::put('/admin/content-management/response/update-response/{id}', 
+    [ResponseController::class, 'updateResponse']
+)->name('admin.content-management.response.update-response');
+
 //Sore Query
 Route::post('/store-response', [ResponseController::class, 'storeResponse'])->name('response.store');
 //Get Response
 Route::get('/responses', [ResponseController::class, 'getResponses'])->name('response.list');
+//Delete Response
+Route::delete('/admin/content-management/response/{id}', [ResponseController::class, 'destroy'])->name('response.delete');
+
+
+
 
 //Logout
 Route::post('/logout', [DashboardController::class, 'logout'])->name('logout');

@@ -21,6 +21,16 @@ class ResponseController extends Controller
         ]);
     }
 
+    public function destroy($id)
+    {
+        $response = Response::findOrFail($id);
+        $response->delete();
+    
+        return redirect()->back()->with('success', 'Response deleted successfully!');
+    }
+    
+
+
    // Show form to add response
    public function showAddResponsePage()
    {
@@ -57,13 +67,37 @@ class ResponseController extends Controller
    }
 
     //Show the edit response page
-    public function showEditResponsePage()
+    public function showEditResponsePage($id)
     {
         $user = Auth::user();
+        $response = Response::findOrFail($id); // Fetch the response
+    
         return view('admin.content-management.response.edit-response', [
             'firstName' => $user->first_name,
             'lastName' => $user->last_name,
-            'role' => $user->role
+            'role' => $user->role,
+            'response' => $response, // Pass response data to view
         ]);
     }
+    
+    public function updateResponse(Request $request, $id)
+    {
+        // Validate the incoming data
+        $request->validate([
+            'question' => 'required|string|max:255', // Adjust validation rules as needed
+            'response' => 'required|string|max:1000',
+        ]);
+
+        // Find the response by ID and update it
+        $response = Response::findOrFail($id);
+        $response->question = $request->question;
+        $response->response = $request->response;
+        $response->save();
+
+        // Redirect back to the edit page with a success message
+        return redirect()->route('admin.content-management.response.edit-response', ['id' => $id])
+                        ->with('success', 'Query and response updated successfully!');
+    }
+
+    
 }

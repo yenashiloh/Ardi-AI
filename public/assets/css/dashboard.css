@@ -799,21 +799,17 @@ body.dark-mode {
 .dataTables_wrapper {
     margin: 0;  
     overflow: hidden;
-    box-shadow: var(--shadow-md);
     background-color: var(--card-light);
-    border: 1px solid rgba(0, 0, 0, 0.05);
     transition: var(--transition);
     border-radius: 10px;
 }
 
 .dark-mode .dataTables_wrapper {
     background-color: var(--card-dark);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    /* border: 1px solid rgba(255, 255, 255, 0.05); */
 }
 
-.dataTables_wrapper:hover {
-    box-shadow: var(--shadow-lg);
-}
+
 
 /* Table Header */
 .dataTables_wrapper .dataTables_header {
@@ -1289,7 +1285,7 @@ table.dataTable thead th.sorting_desc:after {
  
  .dataTables_wrapper {
     width: 100%;
-    padding: 20px;
+    padding: 18px;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch; 
  }
@@ -2154,3 +2150,80 @@ table.dataTable thead th.sorting_desc:after {
     }
 }
 
+/* Pagination Container */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    list-style: none;
+    padding: 10px 0;
+    margin-top: 20px;
+}
+
+/* Pagination Links */
+.pagination li {
+    margin: 0 5px;
+}
+
+.pagination a,
+.pagination span {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 8px 12px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-light);
+    background-color: var(--card-light);
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    transition: var(--transition);
+    text-decoration: none;
+}
+
+.dark-mode .pagination a,
+.dark-mode .pagination span {
+    background-color: var(--dark-sidebar);
+    color: var(--text-dark);
+    border-color: #374151;
+}
+
+/* Hover & Active States */
+.pagination a:hover {
+    background-color: var(--primary-color);
+    color: var(--text-dark);
+    border-color: var(--primary-color);
+}
+
+.dark-mode .pagination a:hover {
+    background-color: var(--primary-color);
+    color: var(--text-dark);
+    border-color: var(--primary-color);
+}
+
+/* Active Page */
+.pagination .active span {
+    background-color: var(--primary-color);
+    color: var(--text-dark);
+    border-color: var(--primary-color);
+    font-weight: 600;
+}
+
+/* Disabled Links */
+.pagination .disabled span {
+    color: #9ca3af;
+    background-color: #e5e7eb;
+    border-color: #d1d5db;
+    cursor: not-allowed;
+}
+
+.dark-mode .pagination .disabled span {
+    background-color: #374151;
+    color: #6b7280;
+    border-color: #4b5563;
+}
+
+/* Pagination Arrows */
+.pagination a i {
+    font-size: 14px;
+}
