@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
+    //Show Dashboard Page
     public function showDashboardPage()
     {
         $user = Auth::user();
@@ -16,6 +17,8 @@ class DashboardController extends Controller
             'role' => $user->role
         ]);
     }
+
+    //Logout 
     public function logout(Request $request)
     {
         Auth::logout();

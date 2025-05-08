@@ -11,10 +11,7 @@
 <!-- Custom JS -->
 <script src="../../assets/js/admin/main.js"></script>
 <script src="../../assets/js/admin/data-table.js"></script>
+<script src="../../assets/js/admin/edit-profile.js"></script>
 
 <!-- Sweet Alert  -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-<script>
-   
-</script>

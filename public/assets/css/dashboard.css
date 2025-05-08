@@ -15,6 +15,9 @@
     --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
     --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --initial-sidebar-width: 280px;
+    --initial-main-margin: 280px;
+    --dark-hover: #f1f1f1;
 }
 
 body {
@@ -31,8 +34,116 @@ body.dark-mode {
 }
 
 /* Sidebar */
-.sidebar {
+.sidebar-hidden {
+    transform: translateX(-100%);
+    width: 0 !important; 
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    border: none;
+    visibility: hidden;
+}
+/* Overlay sidebar for small screens */
+.sidebar-overlay {
+    transform: translateX(0);
     width: 280px;
+    z-index: 1050;
+}
+
+/* Collapsed sidebar state */
+.sidebar-collapsed {
+    width: 80px;
+}
+
+
+/* Main content when sidebar is collapsed/hidden */
+.main-content-full {
+    margin-left: 80px; /* When sidebar is collapsed */
+    transition: margin-left 0.3s ease;
+}
+
+/* Blur effect for content when sidebar is shown on mobile */
+.content-blurred::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    z-index: 1040;
+}
+
+/* Media queries for responsive design */
+@media (max-width: 767px) {
+    .main-content,
+    .main-content-full {
+        margin-left: 0 !important; /* Force margin to be 0 on mobile */
+    }
+    
+    .sidebar-hidden + .main-content,
+    .sidebar-hidden ~ .main-content {
+        margin-left: 0 !important;
+        width: 100% !important;
+    }
+
+    .sidebar {
+        transition: transform 0.3s ease, width 0.3s ease;
+    }
+    
+    .sidebar-collapsed .sidebar-item i {
+        margin-right: 0;
+    }
+    
+    /* Ensure the sidebar is completely hidden in mobile when not shown */
+    .sidebar-hidden {
+        width: 0;
+        overflow: hidden;
+    }
+    .sidebar, .main-content {
+        transition: all 0.3s ease;
+    }
+}
+
+/* Ensure items are properly displayed when sidebar is collapsed */
+.sidebar-collapsed .sidebar-item {
+    padding: 14px;
+    margin: 6px 12px;
+    justify-content: center;
+}
+
+.sidebar-collapsed .sidebar-item i {
+    margin-right: 0;
+    font-size: 20px;
+}
+
+.sidebar-collapsed .sidebar-item span,
+.sidebar-collapsed .sidebar-section-title {
+    display: none;
+}
+
+.sidebar-collapsed .logo {
+    justify-content: center;
+    padding: 0;
+}
+
+.sidebar-collapsed .logo span {
+    display: none; /* Hide text when collapsed */
+}
+
+/* Ensure smooth transitions for better UX */
+.sidebar, 
+.main-content,
+.sidebar-item,
+.logo,
+.sidebar-section-title,
+.logo span {
+    transition: all 0.3s ease;
+}
+
+.sidebar {
+    width: var(--initial-sidebar-width);
     height: 100vh;
     position: fixed;
     top: 0;
@@ -116,7 +227,7 @@ body.dark-mode {
 }
 
 .dark-mode .sidebar-item:hover {
-    background-color: rgba(194, 28, 33, 0.15);
+    background-color: var(--dark-hover);
 }
 
 .sidebar-item.active {
@@ -174,14 +285,14 @@ body.dark-mode {
 }
 /* Main content area */
 .main-content {
-    margin-left: 280px;
+    margin-left: var(--initial-main-margin);
     padding: 3px 32px;
-    transition: var(--transition);
+    transition: all 0.3s ease;
 }
 
 .main-content.expanded {
     margin-left: 80px;
-}
+}   
 
 /* Header */
 .header {
@@ -233,9 +344,19 @@ body.dark-mode {
 
 .primary-button:hover {
     background-color: #a51a1a;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(194, 28, 33, 0.4);
+ 
 }
+
+.dark-mode .primary-button {
+    background-color: var(--light-bg);
+    color: var(--text-light);
+}
+
+.dark-mode .primary-button:hover {
+    background-color: var(--dark-hover);
+    color: var(--primary-color);
+}
+
 
 /* Cards */
 .stat-card {
@@ -557,12 +678,32 @@ body.dark-mode {
     margin-bottom: 24px;
     transition: var(--transition);
     border-radius: 16px;
-    /* margin-top: 8px; */
+}
+.navbar-left {
+    display: flex;
+    align-items: center;
+}
+
+.toggle-button {
+    display: block;
+    background-color: var(--primary-color);
+    color: #fff;
+    border: none;
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 18px;
+    cursor: pointer;
+    margin-right: 16px;
 }
 
 .dark-mode .navbar {
     background-color: var(--dark-sidebar);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.dark-mode .toggle-button {
+    background-color: var(--light-bg);
+    color: var(--text-light);
 }
 /* Dark mode toggle */
     .dark-mode-toggle {
@@ -1238,6 +1379,17 @@ table.dataTable thead th.sorting_desc:after {
     cursor: pointer;
 }
 
+.dark-mode .datatable-btn {
+    background-color: var(--light-bg);
+    color: var(--text-light);
+
+}
+
+.dark-mode .datatable-btn:hover {
+    background-color: var(--dark-hover);
+    color: var(--primary-color);
+}
+
 .datatable-btn-primary {
     background-color: var(--primary-color);
     color: white;
@@ -1260,9 +1412,10 @@ table.dataTable thead th.sorting_desc:after {
     border: 1px solid #4b5563;
 }
 
-.datatable-btn-secondary:hover {
+
+.dark-mode .datatable-btn-secondary:hover {
     background-color: #e5e7eb;
-    color: var(--primary-color);
+    color: var(--text-dark);
 }
 
 .dark-mode .datatable-btn-secondary:hover {
@@ -1481,6 +1634,16 @@ table.dataTable thead th.sorting_desc:after {
   .btn-primary:hover {
     background-color: #2563eb;
     border-color: #2563eb;
+  }
+
+  .dark-mode .btn-primary {
+    background-color: var(--light-bg);
+    color: var(--text-light);
+  }
+
+  .dark-mode .btn-primary:hover {
+    background-color: var(--dark-hover);
+    color: var(--primary-color);
   }
   
   .btn-secondary {
@@ -1811,10 +1974,10 @@ table.dataTable thead th.sorting_desc:after {
     border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.form-card:hover {
+/* .form-card:hover {
     transform: translateY(-5px);
     box-shadow: var(--shadow-lg);
-}
+} */
 
 .form-card h3 {
     font-size: 20px;

@@ -246,130 +246,225 @@ $(document).ready(function() {
 });
 
 /**
- * Archive Confirm Message 
- */
-
-document.addEventListener("DOMContentLoaded", function() {
-    document.querySelectorAll('.archive-btn').forEach(button => {
-        button.addEventListener('click', function() {
-            let userId = this.getAttribute('data-id');
-
-            Swal.fire({
-                title: "Are you sure?",
-                text: "This user will be archived",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#d33",
-                cancelButtonColor: "#3085d6",
-                confirmButtonText: "Yes, archive it"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    fetch(`/users/${userId}/archive`, {
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                            'Content-Type': 'application/json'
-                        }
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        Swal.fire(
-                            "Archived!",
-                            data.message,
-                            "success"
-                        ).then(() => location.reload()); 
-                    })
-                    .catch(error => {
-                        console.error("Error:", error);
-                        Swal.fire("Error!", "Something went wrong.", "error");
-                    });
-                }
-            });
-        });
-    });
-});
-
-/**
- * Disable Confirm Message
+ * Activate and Disable Users
  */
 document.addEventListener("DOMContentLoaded", function() {
+    let currentUserId = null;
+    
+    // Make sure these elements exist before trying to create modals
+    const disableModalElement = document.getElementById('disableModal');
+    const activateModalElement = document.getElementById('activateModal');
+    
+    // Only initialize modals if the elements exist
+    const disableModal = disableModalElement ? new bootstrap.Modal(disableModalElement) : null;
+    const activateModal = activateModalElement ? new bootstrap.Modal(activateModalElement) : null;
+
+    // Check URL parameters for success messages when page loads
+    window.onload = function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const successMessage = urlParams.get('message');
+        const messageType = urlParams.get('type') || 'success';
+        
+        if (successMessage) {
+            showAlert(decodeURIComponent(successMessage), messageType);
+            
+            // Clean up the URL by removing the parameters
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+    };
+
+    // Function to show Bootstrap alerts
+    function showAlert(message, type) {
+        const alertPlaceholder = document.getElementById('successMessage');
+        const wrapper = document.createElement('div');
+        
+        wrapper.innerHTML = `
+            <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        `;
+        
+        alertPlaceholder.innerHTML = '';
+        alertPlaceholder.append(wrapper);
+        
+        // Auto-dismiss after 5 seconds
+        setTimeout(() => {
+            const alert = bootstrap.Alert.getOrCreateInstance(wrapper.querySelector('.alert'));
+            alert.close();
+        }, 5000);
+    }
+
+    // Disable button handlers
     document.querySelectorAll('.disable-btn').forEach(button => {
         button.addEventListener('click', function() {
-            let userId = this.getAttribute('data-id');
-
-            Swal.fire({
-                title: "Are you sure?",
-                text: "You are about to disable this user",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#d33",
-                cancelButtonColor: "#3085d6",
-                confirmButtonText: "Yes, disable it"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    fetch(`/users/${userId}/disable`, {
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                            'Content-Type': 'application/json'
-                        }
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        Swal.fire("Disabled!", data.message, "success").then(() => {
-                            location.reload();
-                        });
-                    })
-                    .catch(error => {
-                        Swal.fire("Error!", "Something went wrong!", "error");
-                        console.error('Error:', error);
-                    });
-                }
-            });
+            currentUserId = this.getAttribute('data-id');
+            if (disableModal) {
+                disableModal.show();
+            }
         });
     });
+
+    // Check if the confirm button exists before adding event listener
+    const confirmDisableBtn = document.getElementById('confirmDisable');
+    if (confirmDisableBtn) {
+        confirmDisableBtn.addEventListener('click', function() {
+            // Use the correct URL format to match your route definition
+            fetch(`/users/${currentUserId}/disable`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Content-Type': 'application/json'
+                },
+                // Add credentials to ensure cookies are sent with the request
+                credentials: 'same-origin'
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(data => {
+                        throw new Error(data.message || `HTTP error! Status: ${response.status}`);
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (disableModal) {
+                    disableModal.hide();
+                }
+                
+                // Redirect to the same page with success message as query param
+                const message = encodeURIComponent(data.message || "User disabled successfully");
+                window.location.href = `${window.location.pathname}?message=${message}&type=success`;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                if (disableModal) {
+                    disableModal.hide();
+                }
+                // Show error message with Bootstrap alert
+                showAlert(error.message || "Something went wrong when disabling the user!", "danger");
+            });
+        });
+    }
+
+    // Activate button handlers
+    document.querySelectorAll('.activate-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            currentUserId = this.getAttribute('data-id');
+            if (activateModal) {
+                activateModal.show();
+            }
+        });
+    });
+
+    // Check if the confirm button exists before adding event listener
+    const confirmActivateBtn = document.getElementById('confirmActivate');
+    if (confirmActivateBtn) {
+        confirmActivateBtn.addEventListener('click', function() {
+            // Use the correct URL format to match your route definition
+            fetch(`/users/${currentUserId}/activate`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Content-Type': 'application/json'
+                },
+                // Add credentials to ensure cookies are sent with the request
+                credentials: 'same-origin'
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(data => {
+                        throw new Error(data.message || `HTTP error! Status: ${response.status}`);
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (activateModal) {
+                    activateModal.hide();
+                }
+                
+                // Redirect to the same page with success message as query param
+                const message = encodeURIComponent(data.message || "User activated successfully");
+                window.location.href = `${window.location.pathname}?message=${message}&type=success`;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                if (activateModal) {
+                    activateModal.hide();
+                }
+                // Show error message with Bootstrap alert
+                showAlert(error.message || "Something went wrong when activating the user!", "danger");
+            });
+        });
+    }
 });
 
 /**
- * Activate Confirm Message
+ * Archive Users
  */
 document.addEventListener("DOMContentLoaded", function() {
-    document.querySelectorAll('.activate-btn').forEach(button => {
-        button.addEventListener('click', function() {
-            let userId = this.getAttribute('data-id');
+    let currentUserId = null;
+    
+    // Make sure the archive modal element exists before trying to create modal
+    const archiveModalElement = document.getElementById('archiveModal');
+    
+    // Only initialize modal if the element exists
+    const archiveModal = archiveModalElement ? new bootstrap.Modal(archiveModalElement) : null;
 
-            Swal.fire({
-                title: "Are you sure?",
-                text: "This user will be activated.",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#d33",
-                cancelButtonColor: "#3085d6",
-                confirmButtonText: "Yes, activate"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    fetch(`/users/${userId}/activate`, {
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                            'Content-Type': 'application/json'
-                        }
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        Swal.fire("Activated!", data.message, "success").then(() => {
-                            location.reload();
-                        });
-                    })
-                    .catch(error => {
-                        Swal.fire("Error!", "Something went wrong!", "error");
-                        console.error('Error:', error);
-                    });
-                }
-            });
+    // Archive button handlers
+    document.querySelectorAll('.archive-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            currentUserId = this.getAttribute('data-id');
+            if (archiveModal) {
+                archiveModal.show();
+            }
         });
     });
+
+    // Check if the confirm button exists before adding event listener
+    const confirmArchiveBtn = document.getElementById('confirmArchive');
+    if (confirmArchiveBtn) {
+        confirmArchiveBtn.addEventListener('click', function() {
+            // Use the correct URL format to match your route definition
+            fetch(`/users/${currentUserId}/archive`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Content-Type': 'application/json'
+                },
+                // Add credentials to ensure cookies are sent with the request
+                credentials: 'same-origin'
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(data => {
+                        throw new Error(data.message || `HTTP error! Status: ${response.status}`);
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (archiveModal) {
+                    archiveModal.hide();
+                }
+                
+                // Redirect to the same page with success message as query param
+                const message = encodeURIComponent(data.message || "User archived successfully");
+                window.location.href = `${window.location.pathname}?message=${message}&type=success`;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                if (archiveModal) {
+                    archiveModal.hide();
+                }
+                // Show error message with Bootstrap alert
+                showAlert(error.message || "Something went wrong when archiving the user!", "danger");
+            });
+        });
+    }
 });
+
 
 /**
  * User Details Modal

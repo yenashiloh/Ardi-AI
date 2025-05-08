@@ -75,9 +75,6 @@
                         <div class="user-name">{{ $userName }}</div>
                         <div class="user-email">{{ $userEmail }}</div>
                     </div>
-                    {{-- <div class="user-settings">
-                      <i class="fas fa-cog"></i>
-                  </div> --}}
                 </div>
             @endauth
 
@@ -120,8 +117,6 @@
                         @endforeach
                     </div>
                 @endguest
-
-
             </div>
 
             @auth
@@ -134,7 +129,7 @@
                         </div>
                     </div>
 
-                    <div class="input-controls">
+                    {{-- <div class="input-controls">
                         <button class="control-button">
                             <i class="fas fa-paperclip"></i> Attach
                         </button>
@@ -144,7 +139,7 @@
                         </button>
 
                         <div class="character-count">0/3,000</div>
-                    </div>
+                    </div> --}}
                 @endauth
                 <div class="footer-text">
                     Ardi AI can make mistakes. Please verify important information.
@@ -157,50 +152,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
     <script src="assets/js/chatbot.js"></script>
     <script src="assets/js/ai-response.js"></script>
-    <script>
-        // function diagnosePageElements() {
-        //     console.group('Page Element Diagnosis');
-
-        //     // Check for cards
-        //     const cards = document.querySelectorAll('.info-card');
-        //     console.log('Info cards found:', cards.length);
-        //     cards.forEach((card, i) => console.log(`Card ${i+1} text:`, card.textContent.trim()));
-
-        //     // Check for prompt area
-        //     const promptArea = document.querySelector('.message-prompt');
-        //     console.log('Prompt area found:', !!promptArea);
-
-        //     // Check for result area
-        //     const resultArea = document.querySelector('.headline-text');
-        //     console.log('Result area found:', !!resultArea);
-
-        //     console.groupEnd();
-
-        //     return {
-        //         cardsExist: cards.length > 0,
-        //         promptAreaExists: !!promptArea,
-        //         resultAreaExists: !!resultArea
-        //     };
-        // }
-
-        // // Run the diagnosis
-        // window.onload = function() {
-        //     console.log('Running element diagnosis...');
-        //     const result = diagnosePageElements();
-
-        //     if (!result.cardsExist) {
-        //         console.error('PROBLEM: No cards found! Check your HTML structure and CSS classes.');
-        //     }
-
-        //     if (!result.promptAreaExists) {
-        //         console.error('PROBLEM: No message-prompt area found! Check your HTML structure.');
-        //     }
-
-        //     if (!result.resultAreaExists) {
-        //         console.error('PROBLEM: No headline-text area found! Check your HTML structure.');
-        //     }
-        // };
-    </script>
 </body>
 
 </html>

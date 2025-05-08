@@ -10,9 +10,9 @@
     <link rel="stylesheet" href="../assets/css/dashboard.css">
     <link rel="icon" href="../../assets/images/Ardi-Logo.svg" type="image/x-icon"/>
     
-    <!-- jQuery must be loaded before DataTables -->
+    <!-- jQuery-->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     
-    <!-- DataTables CSS - updated with a more specific version -->
+    <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
 

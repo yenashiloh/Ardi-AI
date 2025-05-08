@@ -111,7 +111,6 @@ class UserController extends Controller
             ]);
             
         } catch (\Exception $e) {
-            \Log::error('User creation error: ' . $e->getMessage());
             return response()->json([
                 'status' => 'error',
                 'message' => 'An error occurred while adding the user. Please try again.',
@@ -287,6 +286,7 @@ class UserController extends Controller
             ], 500);
         }
     }
+    
     //Edit User Details
     public function editUser($idNumber)
     {
@@ -300,6 +300,7 @@ class UserController extends Controller
             'user' => $user
         ]);
     }
+
     //Update User Details 
     public function updateUser(Request $request, $idNumber)
     {
@@ -389,15 +390,19 @@ class UserController extends Controller
     //Activate User
     public function activateUser($id)
     {
-        $user = User::findOrFail($id);
+        $user = User::where('id_number', $id)->first();
+        
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
         
         if ($user->status === 'Disabled') {
             $user->status = 'Active';
             $user->save();
-
+    
             return response()->json(['message' => 'User Activated Successfully']);
         }
-
+    
         return response()->json(['message' => 'User is already active.'], 400);
     }
 
@@ -412,8 +417,38 @@ class UserController extends Controller
         ]);
     }
 
+    //Show Create Account Page
     public function showCreateAccountPage()
     {
         return view('admin.users-management.create-account');
     }
+
+    //Show Archive Page
+    public function showArchivedUsersPage()
+    {
+        $user = Auth::user();
+
+        return view('admin.users-management.archive', [
+            'firstName' => $user->first_name ?? 'User',
+            'role' => $user->role ?? 'Unknown',
+            'lastName' => $user->last_name,
+            'users' => User::where('is_archive', 1)
+                ->get(['id_number', 'first_name', 'last_name', 'email', 'role', 'status', 'created_at'])
+        ]);
+    }   
+
+    public function restore(Request $request)
+    {
+        $user = User::where('id_number', $request->id_number)->first();
+        if ($user) {
+            $user->is_archive = 0; 
+            $user->save();
+        }
+
+        // Redirect with success message
+        return redirect()->back()->with('success', 'User restored successfully!');
+    }
+
+
+
 }

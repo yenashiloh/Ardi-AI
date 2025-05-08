@@ -566,7 +566,7 @@ body {
     background-color: var(--primary-color, #fefefe);
 }
 
-
+/* User section styling */
 .user-info {
     flex: 1;
 }
@@ -598,6 +598,8 @@ body {
     background-color: var(--primary-light);
     color: var(--primary-color);
 }
+
+/* Chat Area */
 .chat-area {
     flex: 1;
     display: flex;

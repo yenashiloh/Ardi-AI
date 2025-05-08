@@ -1,20 +1,148 @@
-// Sidebar toggle
-const sidebarToggle = document.getElementById('sidebarToggle');
-const sidebar = document.getElementById('sidebar');
-const mainContent = document.getElementById('mainContent');
-
-sidebarToggle.addEventListener('click', () => {
-    sidebar.classList.toggle('mobile-open');
+/**
+ * Toggle Sidebar
+ */
+// Wait for DOM to be fully loaded
+document.addEventListener('DOMContentLoaded', function() {
+    const sidebar = document.getElementById('sidebar');
+    const mainContent = document.getElementById('mainContent');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    
+    // Check if elements exist
+    if (!sidebar || !mainContent || !sidebarToggle) {
+        console.error('Required elements not found');
+        return;
+    }
+    
+    // Function to check if device is small (mobile)
+    function isSmallDevice() {
+        return window.innerWidth < 768; // Adjust breakpoint as needed
+    }
+    
+    // Function to hide sidebar completely
+    function hideSidebar() {
+        sidebar.classList.add('sidebar-hidden');
+        sidebar.classList.remove('sidebar-overlay');
+        sidebar.classList.remove('sidebar-collapsed');
+        mainContent.style.marginLeft = '0';
+        mainContent.classList.add('main-content-full');
+        document.body.classList.remove('content-blurred');
+    }
+    
+    // Function to show sidebar (either collapsed or expanded)
+    function showSidebar(collapsed) {
+        sidebar.classList.remove('sidebar-hidden');
+        
+        if (isSmallDevice()) {
+            // On small devices, show as overlay
+            sidebar.classList.add('sidebar-overlay');
+            sidebar.classList.remove('sidebar-collapsed');
+            mainContent.style.marginLeft = '0';
+            document.body.classList.add('content-blurred');
+        } else {
+            // On larger devices, show as normal or collapsed
+            sidebar.classList.remove('sidebar-overlay');
+            document.body.classList.remove('content-blurred');
+            
+            if (collapsed) {
+                sidebar.classList.add('sidebar-collapsed');
+                mainContent.style.marginLeft = '80px';
+            } else {
+                sidebar.classList.remove('sidebar-collapsed');
+                mainContent.style.marginLeft = '280px';
+            }
+        }
+    }
+    
+    // Apply initial state immediately on page load (before images and other resources)
+    function applyInitialState() {
+        const sidebarHidden = localStorage.getItem('sidebarHidden') === 'true';
+        const sidebarCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+        
+        if (sidebarHidden || isSmallDevice()) {
+            hideSidebar();
+        } else {
+            showSidebar(sidebarCollapsed);
+        }
+    }
+    
+    // Apply initial state as early as possible
+    applyInitialState();
+    
+    // Toggle sidebar when button is clicked
+    sidebarToggle.addEventListener('click', function() {
+        const isHidden = sidebar.classList.contains('sidebar-hidden');
+        
+        if (isHidden) {
+            // Show sidebar (as overlay on small devices, or in saved state on larger devices)
+            const sidebarCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+            showSidebar(sidebarCollapsed);
+            localStorage.setItem('sidebarHidden', 'false');
+        } else {
+            // Hide sidebar
+            hideSidebar();
+            localStorage.setItem('sidebarHidden', 'true');
+        }
+    });
+    
+    // Handle collapsing the sidebar on larger screens (separate toggle function)
+    function toggleSidebarCollapse() {
+        if (!isSmallDevice() && !sidebar.classList.contains('sidebar-hidden')) {
+            const willBeCollapsed = !sidebar.classList.contains('sidebar-collapsed');
+            
+            if (willBeCollapsed) {
+                sidebar.classList.add('sidebar-collapsed');
+                mainContent.style.marginLeft = '80px';
+            } else {
+                sidebar.classList.remove('sidebar-collapsed');
+                mainContent.style.marginLeft = '280px';
+            }
+            
+            localStorage.setItem('sidebarCollapsed', willBeCollapsed);
+        }
+    }
+    
+    // Add this if you have a separate toggle for collapsing (not hiding) the sidebar
+    // const collapseToggle = document.getElementById('collapseToggle');
+    // if (collapseToggle) {
+    //     collapseToggle.addEventListener('click', toggleSidebarCollapse);
+    // }
+    
+    // Close sidebar when clicking outside on small devices
+    document.addEventListener('click', function(event) {
+        if (isSmallDevice() && 
+            !sidebar.classList.contains('sidebar-hidden') && 
+            !sidebar.contains(event.target) && 
+            event.target !== sidebarToggle) {
+            hideSidebar();
+            localStorage.setItem('sidebarHidden', 'true');
+        }
+    });
+    
+    // Update sidebar state on window resize
+    window.addEventListener('resize', function() {
+        const wasSmallDevice = window.innerWidth < 768;
+        
+        // Small delay to ensure accurate reading after resize completes
+        setTimeout(function() {
+            const isSmallNow = isSmallDevice();
+            
+            // If device size category changed
+            if (wasSmallDevice !== isSmallNow) {
+                applyInitialState();
+            }
+        }, 100);
+    });
 });
 
-// Dark mode toggle
+/**
+ * Dark Mode Toggle
+ */
 const darkModeToggle = document.getElementById('darkModeToggle');
 
 darkModeToggle.addEventListener('click', () => {
     document.body.classList.toggle('dark-mode');
     updateCharts();
 });
-
 
 // Update charts when dark mode changes
 function updateCharts() {
@@ -43,10 +171,6 @@ function animateCards() {
 window.addEventListener('load', () => {
     animateCards();
 });
-
-/**
- * Expand
- */
 
 
 /**
@@ -116,3 +240,33 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
+/**
+ * Success Message
+ */
+
+function fadeOutEffect(element) {
+    let opacity = 1;  // Initial opacity
+    let fadeInterval = setInterval(function () {
+        if (opacity <= 0) {
+            clearInterval(fadeInterval);
+            element.style.display = 'none';
+        } else {
+            opacity -= 0.1;  // Reduce opacity
+            element.style.opacity = opacity;
+        }
+    }, 100); // Adjust fade speed
+}
+
+const successMessage = document.getElementById('successMessage');
+if (successMessage) {
+    setTimeout(function () {
+        fadeOutEffect(successMessage);
+    }, 5000); // Hide after 5 seconds
+}
+
+const errorMessage = document.getElementById('errorMessage');
+if (errorMessage) {
+    setTimeout(function () {
+        fadeOutEffect(errorMessage);
+    }, 5000); // Hide after 5 seconds
+}
