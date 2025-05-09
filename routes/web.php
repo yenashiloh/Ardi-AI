@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\DocumentController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AiResponseController;
 use App\Http\Controllers\Admin\ProfileController;
+use App\Http\Controllers\KnowledgeBaseController;
 
 
 Route::get('/', [AuthController::class, 'index'])->name('index');
@@ -39,9 +40,9 @@ Route::post('/resend-otp', [RegisterController::class, 'resendOTP']);
 Route::get('/emails/verify-email', [RegisterController::class, 'showVerificationForm'])->name('verification.show');
 
 /************Dashboard Page**************/
-    Route::middleware(['auth', 'admin'])->group(function () {
+Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'showDashboardPage'])->name('admin.dashboard.dashboard');
-    
+
     //Logout
     Route::post('/logout', [DashboardController::class, 'logout'])->name('logout');
     Route::delete('/documents/{id}', [DocumentController::class, 'destroyDocument'])->name('admin.documents.destroy');
@@ -82,7 +83,8 @@ Route::get('/emails/verify-email', [RegisterController::class, 'showVerification
     //Edit Query Page
     Route::get('/edit-query/{id}', [ResponseController::class, 'showEditResponsePage'])->name('admin.content-management.response.edit-response');
     //Update Query Page
-    Route::put('/admin/content-management/response/update-response/{id}', 
+    Route::put(
+        '/admin/content-management/response/update-response/{id}',
         [ResponseController::class, 'updateResponse']
     )->name('admin.content-management.response.update-response');
 
@@ -109,5 +111,14 @@ Route::get('/emails/verify-email', [RegisterController::class, 'showVerification
 
     //Show Archived Users
     Route::get('/archived-users', [UserController::class, 'showArchivedUsersPage'])->name('admin.archive');
-    
+});
+
+// Knowledge Base routes
+Route::middleware(['auth'])->group(function () {
+    // Synchronous API (original)
+    Route::post('/knowledge-base/query', [KnowledgeBaseController::class, 'query'])->name('knowledge.query');
+
+    // Asynchronous API (new)
+    Route::post('/knowledge-base/submit', [KnowledgeBaseController::class, 'submitQuery'])->name('knowledge.submit');
+    Route::get('/knowledge-base/status/{queryId}', [KnowledgeBaseController::class, 'checkQueryStatus'])->name('knowledge.status');
 });

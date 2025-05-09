@@ -35,4 +35,9 @@ return [
         ],
     ],
 
+    'python_api' => [
+        'url' => env('PYTHON_API_URL', 'http://localhost:5000'),
+        'timeout' => env('PYTHON_API_TIMEOUT', 30),
+    ],
+
 ];

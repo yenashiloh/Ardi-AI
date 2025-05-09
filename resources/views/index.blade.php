@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="assets/css/main.css">
     <link rel="icon" href="assets/images/Ardi-Logo.svg" type="image/x-icon" />
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 
 <body>
@@ -107,7 +108,7 @@
                     </div>
                     <p class="welcome-subheading">Ask me anything about legal case management</p>
                 </div>
-                
+
                 @guest
                     <div class="card-grid">
                         @foreach ($responses->take(6) as $response)
@@ -152,6 +153,276 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
     <script src="assets/js/chatbot.js"></script>
     <script src="assets/js/ai-response.js"></script>
+    {{-- <script src="assets/js/python-response.js"></script> --}}
+    <!-- Add this before the closing </body> tag -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get DOM elements
+            const messageInput = document.querySelector('.message-input');
+            const sendButton = document.querySelector('.send-button');
+            const messagesContainer = document.querySelector('.messages');
+            const welcomeContainer = document.querySelector('.welcome-container');
+            const cardGrid = document.querySelector('.card-grid');
+
+            // Get CSRF token
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+            // Function to create and add user message to chat
+            function addUserMessage(text) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'message';
+                messageDiv.innerHTML = `
+            <div class="message-content">
+                <div class="message-prompt">
+                    ${escapeHtml(text)}
+                </div>
+            </div>
+        `;
+                messagesContainer.appendChild(messageDiv);
+
+                // Scroll to bottom
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+
+            // Function to create and add AI response to chat
+            function addAIMessage(text) {
+                // Parse the Markdown to HTML
+                const parsedText = marked.parse(text);
+
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'message';
+                messageDiv.innerHTML = `
+        <div class="message-avatar">
+            <img src="../assets/images/Ardi-Logo.svg" alt="AI avatar">
+        </div>
+        <div class="message-content">
+            <div class="message-result">
+                <div class="headlines">
+                    <div class="headline-item">
+                        <div class="headline-text markdown-content">${parsedText}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="message-actions">
+                <button class="action-button copy-button">
+                    <i class="far fa-copy"></i> Copy
+                </button>
+                <button class="action-button share-button">
+                    <i class="fas fa-share"></i> Share
+                </button>
+            </div>
+        </div>
+    `;
+                messagesContainer.appendChild(messageDiv);
+
+                // Attach event listener to the copy button
+                const copyButton = messageDiv.querySelector('.copy-button');
+                if (copyButton) {
+                    copyButton.addEventListener('click', function() {
+                        // For the copy functionality, use the original markdown text
+                        // rather than the parsed HTML
+                        copyToClipboard(text, copyButton);
+                    });
+                }
+
+                // Scroll to bottom
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+
+            // Function to create and add loading indicator
+            function addLoadingIndicator() {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'message loading-message';
+                messageDiv.innerHTML = `
+            <div class="message-avatar">
+                <img src="../assets/images/Ardi-Logo.svg" alt="AI avatar">
+            </div>
+            <div class="message-content">
+                <div class="message-result">
+                    <div class="headlines">
+                        <div class="headline-item">
+                            <div class="headline-text">
+                                <span class="loading-dots"><span>.</span><span>.</span><span>.</span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+                messagesContainer.appendChild(messageDiv);
+
+                // Scroll to bottom
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+                return messageDiv;
+            }
+
+            // Helper function to escape HTML
+            function escapeHtml(unsafe) {
+                return unsafe
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&#039;");
+            }
+
+            // Function to copy text to clipboard
+            function copyToClipboard(text, button) {
+                navigator.clipboard.writeText(text).then(function() {
+                    // Store original button content
+                    const originalContent = button.innerHTML;
+
+                    // Change button text to 'Copied!'
+                    button.innerHTML = '<i class="fas fa-check"></i> Copied!';
+
+                    // Restore original content after 2 seconds
+                    setTimeout(function() {
+                        button.innerHTML = originalContent;
+                    }, 2000);
+                }, function() {
+                    // If copying fails
+                    console.error('Failed to copy text');
+                });
+            }
+
+            // Function to update loading message with status
+            function updateLoadingMessage(loadingMessage, statusText) {
+                const textElement = loadingMessage.querySelector('.headline-text');
+                if (textElement) {
+                    textElement.innerHTML = `
+                <span class="loading-dots"><span>.</span><span>.</span><span>.</span></span>
+                <div class="status-text">${statusText}</div>
+            `;
+                }
+            }
+
+            // Function to handle sending message with asynchronous processing
+            async function sendMessage() {
+                const query = messageInput.value.trim();
+
+                // Don't send empty messages
+                if (!query) {
+                    return;
+                }
+
+                // Add user message to chat
+                addUserMessage(query);
+
+                // Clear input field
+                messageInput.value = '';
+
+                // Hide welcome container and cards if visible
+                if (welcomeContainer) {
+                    welcomeContainer.style.display = 'none';
+                }
+                if (cardGrid) {
+                    cardGrid.style.display = 'none';
+                }
+
+                // Add loading indicator
+                const loadingMessage = addLoadingIndicator();
+
+                try {
+                    console.log("Submitting query:", query);
+
+                    // Submit the query for processing
+                    const submitResponse = await fetch('/knowledge-base/submit', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': csrfToken,
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            query: query
+                        })
+                    });
+
+                    const submitData = await submitResponse.json();
+
+                    if (!submitResponse.ok || !submitData.success) {
+                        throw new Error(submitData.error || 'Failed to submit query');
+                    }
+
+                    const queryId = submitData.query_id;
+                    console.log("Query submitted with ID:", queryId);
+
+                    // Poll for the status of the query
+                    let completed = false;
+                    let attempts = 0;
+                    const maxAttempts = 60; // Poll for up to 60 attempts (5 minutes)
+
+                    while (!completed && attempts < maxAttempts) {
+                        await new Promise(resolve => setTimeout(resolve, 3000)); // Wait 3 seconds between polls
+
+                        attempts++;
+                        console.log(`Checking status (attempt ${attempts})...`);
+
+                        const statusResponse = await fetch(`/knowledge-base/status/${queryId}`);
+
+                        if (!statusResponse.ok) {
+                            throw new Error('Failed to check query status');
+                        }
+
+                        const statusData = await statusResponse.json();
+                        console.log("Status data:", statusData);
+
+                        if (statusData.status === 'complete') {
+                            // Remove loading indicator
+                            loadingMessage.remove();
+
+                            // Add AI response
+                            addAIMessage(statusData.response);
+
+                            completed = true;
+                        } else if (statusData.status === 'failed') {
+                            // Remove loading indicator
+                            loadingMessage.remove();
+
+                            // Show error message
+                            addAIMessage(`Error: ${statusData.error}`);
+
+                            completed = true;
+                        } else {
+                            // Update loading message with status
+                            updateLoadingMessage(loadingMessage, statusData.message ||
+                                "Processing your query...");
+                        }
+                    }
+
+                    // If we're at the maximum number of attempts and not completed, show timeout message
+                    if (attempts >= maxAttempts && !completed) {
+                        loadingMessage.remove();
+                        addAIMessage('The query is taking longer than expected. Please try again later.');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+
+                    // Remove loading indicator
+                    loadingMessage.remove();
+
+                    // Show error message
+                    addAIMessage(
+                        `Sorry, there was an error connecting to the knowledge base: ${error.message}`);
+                }
+            }
+
+            // Event listeners
+            if (sendButton) {
+                sendButton.addEventListener('click', sendMessage);
+            }
+
+            if (messageInput) {
+                messageInput.addEventListener('keypress', function(event) {
+                    if (event.key === 'Enter' && !event.shiftKey) {
+                        event.preventDefault();
+                        sendMessage();
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 
 </html>
