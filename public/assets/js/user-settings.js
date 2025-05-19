@@ -1,4 +1,4 @@
-// Updated JavaScript to match your new field IDs
+// Updated JavaScript with error messages displayed below input fields
 document.addEventListener('DOMContentLoaded', function() {
     // Get modal elements
     const userSection = document.getElementById('open-user-modal');
@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(data => {
             if (data.status === 'success') {
-                // Populate form fields with user data - FIXED: Updated field IDs
+                // Populate form fields with user data
                 document.getElementById('user-first-name').value = data.user.first_name;
                 document.getElementById('user-last-name').value = data.user.last_name;
                 document.getElementById('user-email-address').value = data.user.email;
@@ -114,6 +114,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Create container
         const container = document.createElement('div');
         container.className = 'password-container';
+        container.style.position = 'relative'; // Add position relative
         
         // Insert container before input
         input.parentNode.insertBefore(container, input);
@@ -126,6 +127,17 @@ document.addEventListener('DOMContentLoaded', function() {
         toggleBtn.className = 'password-toggle';
         toggleBtn.type = 'button';
         toggleBtn.innerHTML = '<i class="far fa-eye"></i>';
+        
+        // Position the toggle button absolutely to prevent shifting
+        toggleBtn.style.position = 'absolute';
+        toggleBtn.style.right = '10px';
+        toggleBtn.style.top = '50%';
+        toggleBtn.style.transform = 'translateY(-50%)';
+        toggleBtn.style.border = 'none';
+        toggleBtn.style.background = 'transparent';
+        toggleBtn.style.cursor = 'pointer';
+        toggleBtn.style.zIndex = '10';
+        
         container.appendChild(toggleBtn);
         
         // Add toggle functionality
@@ -143,17 +155,19 @@ document.addEventListener('DOMContentLoaded', function() {
     // Handle form submission
     if (saveButton) {
         saveButton.addEventListener('click', function() {
-            // Get form values - FIXED: Updated field IDs
+            // Get form values
             const firstName = document.getElementById('user-first-name').value;
             const lastName = document.getElementById('user-last-name').value;
             const currentPassword = document.getElementById('user-current-password').value;
             const newPassword = document.getElementById('user-password').value;
             const passwordConfirmation = document.getElementById('user-password-confirm').value;
             
+            // Clear previous error messages
+            clearAllErrors();
+            
             // Basic client-side validation
             let isValid = true;
             
-            // FIXED: Updated field IDs for validation
             if (!firstName) {
                 isValid = false;
                 showError('user-first-name', 'First name is required');
@@ -197,7 +211,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (newPassword) {
                     formData.current_password = currentPassword;
                     formData.new_password = newPassword;
-                    formData.password_confirmation = passwordConfirmation;
+                    formData.password_confirmation = passwordConfirmation; // Make sure this matches the backend
                 }
                 
                 // Send data to server
@@ -210,7 +224,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     },
                     body: JSON.stringify(formData)
                 })
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(data => {
+                            throw data;
+                        });
+                    }
+                    return response.json();
+                })
                 .then(data => {
                     // Reset button state
                     saveButton.disabled = false;
@@ -229,10 +250,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         // Close modal
                         closeModal();
                     } else {
-                        // Show error message
-                        showNotification(data.message || 'Failed to update settings', 'error');
-                        
-                        // Show validation errors
+                        // Show validation errors below fields instead of in notification
                         if (data.errors) {
                             Object.keys(data.errors).forEach(key => {
                                 const fieldId = getFieldId(key);
@@ -240,6 +258,9 @@ document.addEventListener('DOMContentLoaded', function() {
                                     showError(fieldId, data.errors[key][0]);
                                 }
                             });
+                        } else {
+                            // Fallback to notification if no field errors
+                            showNotification(data.message || 'Failed to update settings', 'error');
                         }
                     }
                 })
@@ -247,9 +268,38 @@ document.addEventListener('DOMContentLoaded', function() {
                     console.error('Error updating settings:', error);
                     saveButton.disabled = false;
                     saveButton.innerHTML = 'Save Changes';
-                    showNotification('An error occurred. Please try again.', 'error');
+                    
+                    // Important change: Don't show notification for password errors
+                    // Instead, display all validation errors below fields
+                    if (error && error.errors) {
+                        Object.keys(error.errors).forEach(key => {
+                            const fieldId = getFieldId(key);
+                            if (fieldId) {
+                                showError(fieldId, error.errors[key][0]);
+                            }
+                        });
+                    } else if (error && error.message) {
+                        // Only show generic errors as notifications
+                        showNotification(error.message, 'error');
+                    } else {
+                        showNotification('An error occurred. Please try again.', 'error');
+                    }
                 });
             }
+        });
+    }
+    
+    // Clear all error messages
+    function clearAllErrors() {
+        const errorMessages = document.querySelectorAll('.error-message');
+        errorMessages.forEach(msg => {
+            msg.textContent = '';
+        });
+        
+        const inputFields = document.querySelectorAll('.modal-input');
+        inputFields.forEach(field => {
+            field.style.borderColor = '';
+            field.style.boxShadow = '';
         });
     }
     
@@ -260,12 +310,26 @@ document.addEventListener('DOMContentLoaded', function() {
             field.style.borderColor = 'red';
             field.style.boxShadow = '0 0 0 3px rgba(255, 0, 0, 0.2)';
             
+            // Get the form-group container (which contains both the input and where error will go)
+            const formGroup = field.closest('.form-group');
+            
             // Add error message
-            let errorMsg = field.parentNode.querySelector('.error-message');
+            let errorMsg = formGroup.querySelector('.error-message');
             if (!errorMsg) {
                 errorMsg = document.createElement('div');
                 errorMsg.className = 'error-message';
-                field.parentNode.appendChild(errorMsg);
+                // Add to the form group but after the password container if it exists
+                const passwordContainer = formGroup.querySelector('.password-container');
+                if (passwordContainer) {
+                    // Insert after the password container
+                    if (passwordContainer.nextSibling) {
+                        formGroup.insertBefore(errorMsg, passwordContainer.nextSibling);
+                    } else {
+                        formGroup.appendChild(errorMsg);
+                    }
+                } else {
+                    formGroup.appendChild(errorMsg);
+                }
             }
             errorMsg.textContent = message;
             errorMsg.style.color = 'red';
@@ -285,7 +349,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Helper function to map API field names to form field IDs
     function getFieldId(apiField) {
-        // FIXED: Updated field mapping
         const fieldMap = {
             'first_name': 'user-first-name',
             'last_name': 'user-last-name',
