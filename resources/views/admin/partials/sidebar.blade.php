@@ -66,10 +66,10 @@
         </div>
         <div class="navbar-icons">
             <div class="dark-mode-toggle" id="darkModeToggle"></div>
-            <button class="icon-button">
+            {{-- <button class="icon-button">
                 <i class="fas fa-bell"></i>
                 <span class="badge">5</span>
-            </button>
+            </button> --}}
             <div class="user-dropdown-container">
                 <div class="user-dropdown-trigger">
                     <div class="user-avatar-initials">
