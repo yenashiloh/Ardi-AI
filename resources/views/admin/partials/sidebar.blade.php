@@ -23,11 +23,11 @@
             <i class="fas fa-user"></i>
             <span>Users</span>
         </a>
-        <a href="{{ route('admin.users-management.audit-trail') }}"
+        {{-- <a href="{{ route('admin.users-management.audit-trail') }}"
             class="sidebar-item {{ request()->routeIs('admin.users-management.audit-trail') ? 'active' : '' }}">
             <i class="fas fa-layer-group"></i>
             <span>Audit Trail</span>
-        </a>
+        </a> --}}
         <a href="{{ route('admin.archive') }}"
             class="sidebar-item {{ request()->routeIs('admin.archive') ? 'active' : '' }}">
             <i class="fas fa-archive"></i>
