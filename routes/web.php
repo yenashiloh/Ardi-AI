@@ -46,10 +46,7 @@ Route::get('/check-auth-status', function () {
 /************Dashboard Page**************/
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'showDashboardPage'])->name('admin.dashboard.dashboard');
-       // Dashboard API endpoints for AJAX requests
- Route::get('/admin/dashboard/stats', [DashboardController::class, 'getDashboardStats']);
-    
-    // Generate and download dashboard report
+    Route::get('/admin/dashboard/stats', [DashboardController::class, 'getDashboardStats']);
     Route::get('/dashboard/export', [DashboardController::class, 'exportDashboardReport'])->name('admin.dashboard.export');
 
     //Logout
