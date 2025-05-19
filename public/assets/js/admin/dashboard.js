@@ -14,6 +14,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Set up chart interactivity
     setupChartInteractions();
+    
+    // Initialize dashboard charts
+    initializeCharts();
 });
 
 /**
@@ -65,6 +68,206 @@ function initializeDropdowns() {
 }
 
 /**
+ * Initialize dashboard charts based on data from the page
+ */
+function initializeCharts() {
+    try {
+        // Get chart data from HTML elements (inserted by the blade template)
+        const userGrowthDataElem = document.getElementById('userGrowthData');
+        const messageActivityDataElem = document.getElementById('messageActivityData');
+        
+        if (!userGrowthDataElem || !messageActivityDataElem) {
+            console.error('Chart data elements not found. Make sure your blade template includes these hidden inputs.');
+            return;
+        }
+        
+        // Parse JSON data
+        const userGrowthData = JSON.parse(userGrowthDataElem.value);
+        const messageActivityData = JSON.parse(messageActivityDataElem.value);
+        
+        // Extract labels and data points
+        const growthLabels = userGrowthData.map(item => item.month);
+        const growthValues = userGrowthData.map(item => item.users);
+        
+        const activityLabels = messageActivityData.map(item => item.day);
+        const activityValues = messageActivityData.map(item => item.messages);
+        
+        // Create User Growth Chart
+        const userGrowthCtx = document.getElementById('userGrowthChart');
+        if (userGrowthCtx) {
+            const userGrowthChart = new Chart(userGrowthCtx.getContext('2d'), {
+                type: 'line',
+                data: {
+                    labels: growthLabels,
+                    datasets: [{
+                        label: 'New Users',
+                        data: growthValues,
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 2,
+                        tension: 0.3,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                drawBorder: false
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false
+                        }
+                    }
+                }
+            });
+            
+            // Set up chart type toggle
+            const toggleBtn = document.getElementById('growth-type-toggle');
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', function() {
+                    const currentType = userGrowthChart.config.type;
+                    
+                    if (currentType === 'line') {
+                        userGrowthChart.config.type = 'bar';
+                        this.querySelector('span').innerText = 'Bar Chart';
+                        this.querySelector('i').className = 'fas fa-chart-bar';
+                    } else {
+                        userGrowthChart.config.type = 'line';
+                        this.querySelector('span').innerText = 'Line Chart';
+                        this.querySelector('i').className = 'fas fa-chart-line';
+                    }
+                    
+                    userGrowthChart.update();
+                });
+            }
+        }
+        
+        // Create Message Activity Chart
+        const messageActivityCtx = document.getElementById('messageActivityChart');
+        if (messageActivityCtx) {
+            const messageActivityChart = new Chart(messageActivityCtx.getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: activityLabels,
+                    datasets: [{
+                        label: 'Messages',
+                        data: activityValues,
+                        backgroundColor: 'rgba(153, 102, 255, 0.5)',
+                        borderColor: 'rgba(153, 102, 255, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                drawBorder: false
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Set up refresh button functionality
+        const refreshBtn = document.getElementById('refresh-data');
+        if (refreshBtn) {
+            refreshBtn.addEventListener('click', function() {
+                this.disabled = true;
+                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Refreshing...';
+                
+                fetch('/admin/dashboard/stats')
+                    .then(response => response.json())
+                    .then(data => {
+                        // Update cards
+                        document.querySelector('.stat-card:nth-child(1) .value').innerText = numberFormat(data.totalUsers);
+                        document.querySelector('.stat-card:nth-child(2) .value').innerText = numberFormat(data.activeUsers);
+                        document.querySelector('.stat-card:nth-child(3) .value').innerText = numberFormat(data.dailyActiveUsers);
+                        document.querySelector('.stat-card:nth-child(4) .value').innerText = numberFormat(data.messagesExchanged);
+                        
+                        // Update charts
+                        const userGrowthChart = Chart.getChart('userGrowthChart');
+                        if (userGrowthChart) {
+                            userGrowthChart.data.labels = data.userGrowthData.map(item => item.month);
+                            userGrowthChart.data.datasets[0].data = data.userGrowthData.map(item => item.users);
+                            userGrowthChart.update();
+                        }
+                        
+                        const messageActivityChart = Chart.getChart('messageActivityChart');
+                        if (messageActivityChart) {
+                            messageActivityChart.data.labels = data.messageActivityData.map(item => item.day);
+                            messageActivityChart.data.datasets[0].data = data.messageActivityData.map(item => item.messages);
+                            messageActivityChart.update();
+                        }
+                        
+                        // Update messages today count
+                        if (data.messageActivityData && data.messageActivityData.length > 0) {
+                            const messagesElement = document.getElementById('messages-today');
+                            if (messagesElement) {
+                                messagesElement.textContent = data.messageActivityData[data.messageActivityData.length - 1].messages;
+                            }
+                        }
+                        
+                        // Re-enable button
+                        this.disabled = false;
+                        this.innerHTML = '<i class="fas fa-sync-alt"></i> Refresh';
+                        
+                        // Show success notification
+                        showNotification('Dashboard data updated successfully', 'success');
+                    })
+                    .catch(error => {
+                        console.error('Error refreshing data:', error);
+                        this.disabled = false;
+                        this.innerHTML = '<i class="fas fa-sync-alt"></i> Refresh';
+                        
+                        // Show error notification
+                        showNotification('Error refreshing data', 'error');
+                    });
+            });
+        }
+        
+        // Set up export button functionality
+        const exportBtn = document.getElementById('download-report');
+        if (exportBtn) {
+            exportBtn.addEventListener('click', function() {
+                window.location.href = '/admin/dashboard/export';
+            });
+        }
+    } catch (error) {
+        console.error('Error initializing charts:', error);
+    }
+}
+
+/**
  * Setup date filter functionality
  */
 function setupDateFilters() {
@@ -113,18 +316,7 @@ function applyDateFilter(filter) {
     
     // Make API call to get filtered data
     fetch(`/admin/dashboard/stats?start_date=${formattedStartDate}&end_date=${formattedEndDate}`)
-        .then(response => {
-            // Check if response is ok
-            if (!response.ok) {
-                throw new Error(`Server responded with status: ${response.status}`);
-            }
-            // Check if response is JSON
-            const contentType = response.headers.get('content-type');
-            if (!contentType || !contentType.includes('application/json')) {
-                throw new Error('Expected JSON response but got a different content type');
-            }
-            return response.json();
-        })
+        .then(response => response.json())
         .then(data => {
             // Update dashboard with new data
             updateDashboardStats(data);
@@ -144,12 +336,7 @@ function applyDateFilter(filter) {
             refreshButton.innerHTML = '<i class="fas fa-sync-alt"></i> Refresh';
             
             // Show error notification
-            showNotification('Error updating dashboard data: ' + error.message, 'error');
-            
-            // If the route is not found, suggest checking the routes
-            if (error.message.includes('404') || error.message.includes('not found')) {
-                showNotification('The dashboard stats endpoint may not be registered. Check your routes file.', 'warning');
-            }
+            showNotification('Error updating dashboard data', 'error');
         });
 }
 
@@ -168,66 +355,39 @@ function formatDate(date) {
  * Update all dashboard statistics with new data
  */
 function updateDashboardStats(data) {
-    // Check if data is valid before updating
-    if (!data || typeof data !== 'object') {
-        console.error('Invalid data received:', data);
-        showNotification('Invalid data received from server', 'error');
-        return;
+    // Update card values
+    document.querySelector('.stat-card:nth-child(1) .value').textContent = numberFormat(data.totalUsers);
+    document.querySelector('.stat-card:nth-child(2) .value').textContent = numberFormat(data.activeUsers);
+    document.querySelector('.stat-card:nth-child(3) .value').textContent = numberFormat(data.dailyActiveUsers);
+    document.querySelector('.stat-card:nth-child(4) .value').textContent = numberFormat(data.messagesExchanged);
+    
+    // Update user growth chart
+    const userGrowthChart = Chart.getChart('userGrowthChart');
+    if (userGrowthChart) {
+        userGrowthChart.data.labels = data.userGrowthData.map(item => item.month);
+        userGrowthChart.data.datasets[0].data = data.userGrowthData.map(item => item.users);
+        userGrowthChart.update();
     }
-
-    try {
-        // Update card values if they exist
-        const totalUsersEl = document.querySelector('.stat-card:nth-child(1) .value');
-        if (totalUsersEl && data.totalUsers !== undefined) {
-            totalUsersEl.textContent = numberFormat(data.totalUsers);
+    
+    // Update message activity chart
+    const messageActivityChart = Chart.getChart('messageActivityChart');
+    if (messageActivityChart) {
+        messageActivityChart.data.labels = data.messageActivityData.map(item => item.day);
+        messageActivityChart.data.datasets[0].data = data.messageActivityData.map(item => item.messages);
+        messageActivityChart.update();
+    }
+    
+    // Update percentage changes
+    if (data.percentageChanges) {
+        updatePercentageChanges(data.percentageChanges);
+    }
+    
+    // Update the messages today count
+    if (data.messageActivityData && data.messageActivityData.length > 0) {
+        const messagesElement = document.getElementById('messages-today');
+        if (messagesElement) {
+            messagesElement.textContent = data.messageActivityData[data.messageActivityData.length - 1].messages;
         }
-        
-        const activeUsersEl = document.querySelector('.stat-card:nth-child(2) .value');
-        if (activeUsersEl && data.activeUsers !== undefined) {
-            activeUsersEl.textContent = numberFormat(data.activeUsers);
-        }
-        
-        const dailyActiveUsersEl = document.querySelector('.stat-card:nth-child(3) .value');
-        if (dailyActiveUsersEl && data.dailyActiveUsers !== undefined) {
-            dailyActiveUsersEl.textContent = numberFormat(data.dailyActiveUsers);
-        }
-        
-        const messagesExchangedEl = document.querySelector('.stat-card:nth-child(4) .value');
-        if (messagesExchangedEl && data.messagesExchanged !== undefined) {
-            messagesExchangedEl.textContent = numberFormat(data.messagesExchanged);
-        }
-        
-        // Update user growth chart if it exists
-        const userGrowthChart = Chart.getChart('userGrowthChart');
-        if (userGrowthChart && data.userGrowthData) {
-            userGrowthChart.data.labels = data.userGrowthData.map(item => item.month);
-            userGrowthChart.data.datasets[0].data = data.userGrowthData.map(item => item.users);
-            userGrowthChart.update();
-        }
-        
-        // Update message activity chart if it exists
-        const messageActivityChart = Chart.getChart('messageActivityChart');
-        if (messageActivityChart && data.messageActivityData) {
-            messageActivityChart.data.labels = data.messageActivityData.map(item => item.day);
-            messageActivityChart.data.datasets[0].data = data.messageActivityData.map(item => item.messages);
-            messageActivityChart.update();
-        }
-        
-        // Update percentage changes if they exist
-        if (data.percentageChanges) {
-            updatePercentageChanges(data.percentageChanges);
-        }
-        
-        // Update the messages today count if it exists
-        if (data.messageActivityData && data.messageActivityData.length > 0) {
-            const messagesElement = document.getElementById('messages-today');
-            if (messagesElement) {
-                messagesElement.textContent = data.messageActivityData[data.messageActivityData.length - 1].messages;
-            }
-        }
-    } catch (error) {
-        console.error('Error updating dashboard stats:', error);
-        showNotification('Error updating dashboard display: ' + error.message, 'error');
     }
 }
 
@@ -318,25 +478,21 @@ function setupStatsRefresh() {
 function setupChartInteractions() {
     // Get charts (wait for them to be initialized)
     setTimeout(() => {
-        try {
-            const userGrowthChart = Chart.getChart('userGrowthChart');
-            const messageActivityChart = Chart.getChart('messageActivityChart');
-            
-            if (userGrowthChart) {
-                // Handle resize
-                window.addEventListener('resize', function() {
-                    userGrowthChart.resize();
-                });
-            }
-            
-            if (messageActivityChart) {
-                // Handle resize
-                window.addEventListener('resize', function() {
-                    messageActivityChart.resize();
-                });
-            }
-        } catch (error) {
-            console.error('Error setting up chart interactions:', error);
+        const userGrowthChart = Chart.getChart('userGrowthChart');
+        const messageActivityChart = Chart.getChart('messageActivityChart');
+        
+        if (userGrowthChart) {
+            // Handle resize
+            window.addEventListener('resize', function() {
+                userGrowthChart.resize();
+            });
+        }
+        
+        if (messageActivityChart) {
+            // Handle resize
+            window.addEventListener('resize', function() {
+                messageActivityChart.resize();
+            });
         }
     }, 1000);
 }
@@ -357,7 +513,7 @@ function showNotification(message, type = 'info') {
     notification.className = `notification ${type}`;
     notification.innerHTML = `
         <div class="notification-content">
-            <i class="fas fa-${type === 'error' ? 'exclamation-triangle' : type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-circle' : 'info-circle'}"></i>
+            <i class="fas fa-${type === 'error' ? 'exclamation-triangle' : type === 'success' ? 'check-circle' : 'info-circle'}"></i>
             <span>${message}</span>
         </div>
         <button class="notification-close"><i class="fas fa-times"></i></button>
