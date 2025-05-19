@@ -12,21 +12,19 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AiResponseController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\KnowledgeBaseController;
+use App\Http\Controllers\User\UserSettingController;
 
 
 Route::get('/', [AuthController::class, 'index'])->name('index');
 
-Route::get('/index-2', [LoginController::class, 'showIndexTwoPage'])->name('index-2');
-Route::get('/index-4', [LoginController::class, 'showIndexFourPage'])->name('index-4');
-
 Route::get('/responses/{id}', [AiResponseController::class, 'getById'])->name('responses.get');
-
+Route::get('/user/settings', [UserSettingController::class, 'getSettings'])->name('getSettings');
+Route::post('/user/settings/update', [UserSettingController::class, 'updateSettings'])->name('updateSettings');
 
 /**************Login Page******************/
 Route::get('/login', [LoginController::class, 'showLoginPage'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('login.post');
-Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
-
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 /**************Sign Up Page***************/
 Route::get('/sign-up', [RegisterController::class, 'showSignUpPage'])->name('sign-up');
@@ -38,6 +36,12 @@ Route::post('/verify-otp', [RegisterController::class, 'verifyOTP']);
 Route::post('/resend-otp', [RegisterController::class, 'resendOTP']);
 //Verify Email Template Email
 Route::get('/emails/verify-email', [RegisterController::class, 'showVerificationForm'])->name('verification.show');
+
+Route::get('/check-auth-status', function () {
+    return response()->json([
+        'authenticated' => Auth::check()
+    ]);
+});
 
 /************Dashboard Page**************/
 Route::middleware(['auth', 'admin'])->group(function () {

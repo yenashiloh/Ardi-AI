@@ -10,7 +10,7 @@ use App\Models\Response;
 class AuthController extends Controller
 {
     //Show index page
-    public function index()
+   public function index()
     {
         // Retrieve all responses outside of the authentication check
         $responses = Response::all(); 
@@ -20,15 +20,17 @@ class AuthController extends Controller
             // Retrieve the authenticated user
             $user = Auth::user();
 
-            // Concatenate the user's first and last name
-            $userName = $user->first_name . ' ' . $user->last_name;
+            // Get first and last name separately
+            $userFirstName = $user->first_name;
+            $userLastName = $user->last_name;
 
-            // Generate user initials (first two characters of the name, in uppercase)
-            $userInitial = strtoupper(substr($userName, 0, 2));
+            // Generate user initials (first character of first name and first character of last name, in uppercase)
+           $userInitial = strtoupper(substr($userFirstName, 0, 1) . substr($userLastName, 0, 1));
 
             // Pass user details and responses to the 'index' view
             return view('index', [
-                'userName' => $userName,
+                'userFirstName' => $userFirstName,
+                'userLastName' => $userLastName,
                 'userEmail' => $user->email,
                 'userInitial' => $userInitial,
                 'responses' => $responses
@@ -40,4 +42,20 @@ class AuthController extends Controller
             'responses' => $responses
         ]);
     }
+
+    public function logout(Request $request)
+    {
+        Auth::logout();
+        
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        
+        return redirect()->route('index')
+            ->withHeaders([
+                'Cache-Control' => 'no-store, no-cache, must-revalidate, max-age=0',
+                'Pragma' => 'no-cache',
+                'Expires' => 'Sat, 01 Jan 2000 00:00:00 GMT',
+            ]);
+    }
+
 }

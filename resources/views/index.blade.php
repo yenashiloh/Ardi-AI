@@ -33,24 +33,15 @@
             @auth
                 <div class="chat-history">
                     <div class="history-item active">
-                        <div class="history-icon">
-                            <i class="fas fa-comment-alt"></i>
-                        </div>
                         <div class="history-text">What is Paralegal?</div>
                         <div class="history-date">Today</div>
                     </div>
 
                     <div class="history-item">
-                        <div class="history-icon">
-                            <i class="fas fa-comment-alt"></i>
-                        </div>
                         <div class="history-text">Product Description Generator</div>
                         <div class="history-date">Yesterday</div>
                     </div>
                     <div class="history-item">
-                        <div class="history-icon">
-                            <i class="fas fa-comment-alt"></i>
-                        </div>
                         <div class="history-text">Product Description Generator</div>
                         <div class="history-date">Yesterday</div>
                     </div>
@@ -66,19 +57,76 @@
                 </div>
             </div>
             @auth
-                <div class="user-section">
+                <div class="user-section" id="open-user-modal">
+
                     <div class="user-avatar">
                         <div class="avatar-initials">
-                            {{ strtoupper(substr($userName, 0, 2)) }}
+                            {{ $userInitial }}
                         </div>
                     </div>
                     <div class="user-info">
-                        <div class="user-name">{{ $userName }}</div>
+                        <div class="user-name">{{ $userFirstName }} {{ $userLastName }}</div>
                         <div class="user-email">{{ $userEmail }}</div>
                     </div>
                 </div>
             @endauth
 
+            @auth
+                <!-- User Settings Modal -->
+                <div class="user-modal" id="user-modal">
+                    <div class="modal-overlay"></div>
+                    <div class="modal-container">
+                        <div class="modal-header">
+                            <h3>User Settings</h3>
+                            <button class="close-modal"><i class="fas fa-times"></i></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="modal-columns">
+                                <!-- Left Column -->
+                                <div class="modal-column">
+                                    <div class="form-group">
+                                        <label for="user-first-name">First Name</label>
+                                        <input type="text" id="user-first-name" class="modal-input"
+                                            placeholder="Enter first name" value="{{ $userFirstName }}">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="user-last-name">Last Name</label>
+                                        <input type="text" id="user-last-name" class="modal-input"
+                                            placeholder="Enter last name" value="{{ $userLastName }}">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="user-email-address">Email Address</label>
+                                        <input type="email" id="user-email-address" class="modal-input"
+                                            placeholder="Enter email address" value="{{ $userEmail }}" disabled>
+                                    </div>
+                                </div>
+                                <!-- Right Column -->
+                                <div class="modal-column">
+                                    <div class="form-group">
+                                        <label for="user-current-password">Current Password</label>
+                                        <input type="password" id="user-current-password" class="modal-input"
+                                            placeholder="Enter current password">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="user-password">New Password</label>
+                                        <input type="password" id="user-password" class="modal-input"
+                                            placeholder="Enter new password">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="user-password-confirm">Confirm New Password</label>
+                                        <input type="password" id="user-password-confirm" class="modal-input"
+                                            placeholder="Confirm new password">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="modal-button cancel-button" id="close-modal">Cancel</button>
+                            <button class="modal-button save-button">Save Changes</button>
+                        </div>
+                    </div>
+                </div>
+            @endauth
         </div>
 
         <!-- Chat area -->
@@ -89,13 +137,21 @@
                         <i class="fas fa-bars"></i>
                     </div>
                 </div>
-                @guest
-                    <div class="header-controls">
+                <div class="header-controls">
+                    @guest
                         <div class="login">
                             <a href="{{ route('login') }}">Login</a>
                         </div>
-                    </div>
-                @endguest
+                    @else
+                        <div class="login">
+                            <a href="#"
+                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                @csrf
+                            </form>
+                        </div>
+                    @endguest
+                </div>
             </div>
 
             <div class="messages">
@@ -129,18 +185,6 @@
                             <i class="fas fa-arrow-up"></i>
                         </div>
                     </div>
-
-                    {{-- <div class="input-controls">
-                        <button class="control-button">
-                            <i class="fas fa-paperclip"></i> Attach
-                        </button>
-
-                        <button class="control-button">
-                            <i class="fas fa-magic"></i> Browse Prompts
-                        </button>
-
-                        <div class="character-count">0/3,000</div>
-                    </div> --}}
                 @endauth
                 <div class="footer-text">
                     Ardi AI can make mistakes. Please verify important information.
@@ -153,6 +197,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
     <script src="assets/js/chatbot.js"></script>
     <script src="assets/js/ai-response.js"></script>
+    <script src="assets/js/user-settings.js"></script>
+    <script src="assets/js/prevent-back-history.js"></script>
     {{-- <script src="assets/js/python-response.js"></script> --}}
     <!-- Add this before the closing </body> tag -->
     <script>

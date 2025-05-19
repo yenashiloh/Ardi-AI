@@ -52,4 +52,5 @@ class LoginController extends Controller
     {
         return view('index-4');
     }
+    
 }
